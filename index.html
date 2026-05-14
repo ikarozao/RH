@@ -279,13 +279,13 @@
 <body>
 <div class="container">
     <header>
-        <h1>🎽 CONTROLE DE UNIFORMES</h1>
+        <h1>CONTROLE DE UNIFORMES</h1>
         <p>Opção Telecom - Gestão de Estoque</p>
     </header>
 
     <!-- Status da URL -->
     <div class="card">
-        <h3>⚙️ Configuração</h3>
+        <h3>Configuração</h3>
         <div class="url-bar" style="display: flex; gap: 8px; margin-bottom: 8px;">
             <input type="text" id="inputUrl" placeholder="URL do Google Apps Script" style="flex:1; padding:10px; border-radius:12px; border:1.5px solid #334155; background:#0f172a; color:white;" value="https://script.google.com/macros/s/AKfycbysRFKY0jJS7kgrPryUEuWV_0QTwCvBRD9fuSJIbAOv7uCQKu0nhPluoBW05EL6TKH3oA/exec" />
             <button class="btn-salvar-url" onclick="salvarUrl()" style="padding:10px 16px; background:#3b82f6; border:none; border-radius:12px; color:white; font-weight:bold;">Salvar</button>
@@ -295,15 +295,15 @@
 
     <!-- Navegação -->
     <div class="nav-tabs">
-        <button class="nav-tab ativo" onclick="mudarPagina('movimentacao', this)">📊 MOVIMENTAÇÕES</button>
-        <button class="nav-tab" onclick="mudarPagina('estoque', this)">📦 ESTOQUE</button>
-        <button class="nav-tab" onclick="mudarPagina('relatorios', this)">📈 RELATÓRIOS</button>
+        <button class="nav-tab ativo" onclick="mudarPagina('movimentacao', this)">MOVIMENTAÇÕES</button>
+        <button class="nav-tab" onclick="mudarPagina('estoque', this)">ESTOQUE</button>
+        <button class="nav-tab" onclick="mudarPagina('relatorios', this)">RELATÓRIOS</button>
     </div>
 
     <!-- PÁGINA 1: MOVIMENTAÇÕES -->
     <div id="paginaMovimentacao" class="pagina ativa">
         <div class="card">
-            <h3>📝 Registrar Movimentação</h3>
+            <h3>Registrar Movimentação</h3>
             <div class="grid-2">
                 <div class="form-group">
                     <label>Uniforme *</label>
@@ -367,11 +367,11 @@
                 <label>Observação</label>
                 <textarea id="mov_observacao" rows="2"></textarea>
             </div>
-            <button class="btn-primary" id="btnSalvarMov" onclick="enviarMovimentacao()">💾 SALVAR</button>
+            <button class="btn-primary" id="btnSalvarMov" onclick="enviarMovimentacao()">SALVAR</button>
         </div>
         
         <div class="card">
-            <h3>📋 Últimas Movimentações</h3>
+            <h3>Últimas Movimentações</h3>
             <div class="table-wrapper">
                 <table id="tabelaMovimentacoes">
                     <thead><tr><th>Data</th><th>Uniforme</th><th>Tamanho</th><th>Local</th><th>Qtd</th><th>Destinatário</th><th>Tipo</th><th>Est.Ini</th><th>Est.Fim</th></tr></thead>
@@ -384,7 +384,7 @@
     <!-- PÁGINA 2: ESTOQUE -->
     <div id="paginaEstoque" class="pagina">
         <div class="card">
-            <h3>📦 Gerenciar Estoque</h3>
+            <h3>Gerenciar Estoque</h3>
             <div class="grid-3">
                 <div class="form-group">
                     <label>Uniforme</label>
@@ -414,11 +414,11 @@
                 <label>Local</label>
                 <input type="text" id="est_local" placeholder="Local de armazenamento">
             </div>
-            <button class="btn-primary" onclick="salvarEstoqueInicial()">💾 SALVAR ESTOQUE</button>
+            <button class="btn-primary" onclick="salvarEstoqueInicial()">SALVAR ESTOQUE</button>
         </div>
         
         <div class="card">
-            <h3>📊 Resumo do Estoque</h3>
+            <h3>Resumo do Estoque</h3>
             <div class="resumo-estoque">
                 <div class="resumo-item"><div class="numero" id="totalItens">0</div><div class="label">Total Itens</div></div>
                 <div class="resumo-item"><div class="numero" id="totalTipos">0</div><div class="label">Tipos</div></div>
@@ -436,7 +436,7 @@
     <!-- PÁGINA 3: RELATÓRIOS COM FILTROS -->
     <div id="paginaRelatorios" class="pagina">
         <div class="card">
-            <h3>📈 Relatório de Movimentações</h3>
+            <h3>Relatório de Movimentações</h3>
             <div class="filtros">
                 <input type="month" id="filtroMes" onchange="filtrarRelatorio()">
                 <select id="filtroTipo" onchange="filtrarRelatorio()">
@@ -449,9 +449,9 @@
                 </select>
             </div>
             <div class="acoes-botoes">
-                <button class="btn-primary btn-secondary" onclick="limparFiltros()">🔄 Limpar Filtros</button>
-                <button class="btn-primary btn-warning" onclick="limparRelatorios()">🗑️ Limpar Histórico</button>
-                <button class="btn-primary btn-secondary" onclick="exportarRelatorioCSV()">📥 Exportar CSV</button>
+                <button class="btn-primary btn-secondary" onclick="limparFiltros()">Limpar Filtros</button>
+                <button class="btn-primary btn-warning" onclick="limparRelatorios()">Limpar Histórico</button>
+                <button class="btn-primary btn-secondary" onclick="exportarRelatorioCSV()">Exportar CSV</button>
             </div>
             <div class="table-wrapper">
                 <table id="tabelaRelatorio">
@@ -468,7 +468,7 @@
         </div>
         
         <div class="card">
-            <h3>📊 Resumo por Uniforme</h3>
+            <h3>Resumo por Uniforme</h3>
             <div class="table-wrapper">
                 <table id="tabelaResumoUniforme">
                     <thead><tr><th>Uniforme</th><th>Tamanho</th><th>Estoque</th><th>Entradas</th><th>Saídas</th></tr></thead>
@@ -507,7 +507,7 @@
         }
         localStorage.setItem('apps_script_url', url);
         SCRIPT_URL = url;
-        showToast('✅ URL salva!', 'success');
+        showToast('URL salva!', 'success');
     }
     
     // ========== DADOS LOCAIS ==========
@@ -594,7 +594,7 @@
         const tipo = tipoMovimento;
         
         if(!uniforme || !tamanho || !local || !destinatario || !data) {
-            showToast('❌ Preencha todos os campos!', 'error');
+            showToast('Preencha todos os campos!', 'error');
             return;
         }
         
@@ -602,7 +602,7 @@
         let estoqueFinal = estoqueInicial;
         if(tipo === 'entrada') estoqueFinal = estoqueInicial + quantidade;
         else if(quantidade > estoqueInicial) {
-            showToast(`⚠️ Estoque insuficiente! Disponível: ${estoqueInicial}`, 'error');
+            showToast(`Estoque insuficiente! Disponível: ${estoqueInicial}`, 'error');
             return;
         } else estoqueFinal = estoqueInicial - quantidade;
         
@@ -613,7 +613,7 @@
         atualizarEstoque(uniforme, tamanho, quantidade, tipo, local);
         await enviarParaPlanilha(mov);
         
-        showToast('✅ Movimentação salva!', 'success');
+        showToast('Movimentação salva!', 'success');
         document.getElementById('mov_local').value = '';
         document.getElementById('mov_destinatario').value = '';
         document.getElementById('mov_observacao').value = '';
@@ -643,7 +643,7 @@
         }
         salvarEstoqueLocal();
         atualizarTabelaEstoque();
-        showToast('✅ Estoque salvo!', 'success');
+        showToast('Estoque salvo!', 'success');
     }
     
     function editarEstoque(uniforme, tamanho) {
@@ -662,7 +662,7 @@
             estoque = estoque.filter(e => !(e.uniforme === uniforme && e.tamanho === tamanho));
             salvarEstoqueLocal();
             atualizarTabelaEstoque();
-            showToast('✅ Produto removido!', 'success');
+            showToast('Produto removido!', 'success');
         }
     }
     
@@ -765,7 +765,7 @@
         document.getElementById('filtroTipo').value = 'todos';
         document.getElementById('filtroUniforme').value = '';
         filtrarRelatorio();
-        showToast('✅ Filtros limpos!', 'success');
+        showToast('Filtros limpos!', 'success');
     }
     
     function limparRelatorios() {
@@ -775,7 +775,7 @@
             atualizarTabelaMovimentacoes();
             atualizarFiltrosUniformes();
             filtrarRelatorio();
-            showToast('🗑️ Histórico limpo!', 'warning');
+            showToast('Histórico limpo!', 'warning');
         }
     }
     
@@ -793,7 +793,7 @@
         link.download = `relatorio_uniformes_${new Date().toISOString().split('T')[0]}.csv`;
         link.click();
         URL.revokeObjectURL(link.href);
-        showToast('📥 Relatório exportado!', 'success');
+        showToast('Relatório exportado!', 'success');
     }
     
     // ========== NAVEGAÇÃO ==========
