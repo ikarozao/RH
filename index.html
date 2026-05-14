@@ -14,86 +14,60 @@
             padding: 24px 16px;
         }
 
-        .container { max-width: 680px; margin: 0 auto; }
-
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* Navegação */
+        .nav-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .nav-tab {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+        }
+        .nav-tab.ativo {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+        }
+        .nav-tab:hover { background: rgba(255,255,255,0.2); }
+        
         header {
             text-align: center;
             color: white;
             margin-bottom: 28px;
         }
-
         header h1 { font-size: 1.7em; letter-spacing: 1px; }
         header p { opacity: 0.7; font-size: 0.9em; margin-top: 4px; }
-
+        
         .card {
             background: white;
             border-radius: 16px;
             padding: 24px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.25);
         }
-
         .card h3 {
-            font-size: 1em;
+            font-size: 1.1em;
             color: #333;
             margin-bottom: 18px;
             padding-bottom: 10px;
             border-bottom: 2px solid #667eea;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-
-        .url-bar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .url-bar input {
-            flex: 1;
-            padding: 10px 12px;
-            border: 1.5px solid #ddd;
-            border-radius: 8px;
-            font-size: 13px;
-            font-family: monospace;
-            color: #333;
-        }
-
-        .url-bar input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn-salvar-url {
-            padding: 10px 16px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .url-status {
-            font-size: 12px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            margin-top: 4px;
-        }
-
-        .url-status.ok { background: #e8f5e9; color: #2e7d32; }
-        .url-status.vazio { background: #fff3e0; color: #e65100; }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        
         .form-group { margin-bottom: 13px; }
-
         .form-group label {
             display: block;
             font-size: 12px;
@@ -101,63 +75,22 @@
             color: #666;
             margin-bottom: 5px;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
         }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 10px 12px;
             border: 1.5px solid #e0e0e0;
             border-radius: 8px;
             font-size: 14px;
-            color: #333;
             background: #fafafa;
-            transition: border-color 0.2s;
         }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #667eea;
             background: white;
         }
-
-        .radio-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .radio-btn {
-            flex: 1;
-            padding: 10px;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.2s;
-            background: #fafafa;
-            color: #666;
-            user-select: none;
-        }
-
-        .radio-btn.entrada.ativo {
-            background: #e8f5e9;
-            border-color: #4caf50;
-            color: #2e7d32;
-        }
-
-        .radio-btn.saida.ativo {
-            background: #ffebee;
-            border-color: #f44336;
-            color: #c62828;
-        }
-
-        .btn-enviar {
+        
+        .btn-primary {
             width: 100%;
             padding: 14px;
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -168,304 +101,505 @@
             font-weight: 700;
             cursor: pointer;
             margin-top: 6px;
-            letter-spacing: 0.5px;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+        
+        .table-wrapper { overflow-x: auto; margin-top: 16px; max-height: 400px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; }
+        th { background: #f8f9fa; color: #555; font-weight: 600; position: sticky; top: 0; }
+        tr:hover { background: #f5f5f5; }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge.entrada { background: #e8f5e9; color: #2e7d32; }
+        .badge.saida { background: #ffebee; color: #c62828; }
+        
+        .radio-group { display: flex; gap: 10px; }
+        .radio-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            background: #fafafa;
             transition: all 0.2s;
         }
-
-        .btn-enviar:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
-        .btn-enviar:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        .log {
-            max-height: 220px;
-            overflow-y: auto;
-            margin-top: 12px;
+        .radio-btn.entrada.ativo { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .radio-btn.saida.ativo { background: #ffebee; border-color: #f44336; color: #c62828; }
+        
+        .url-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+        .url-bar input { flex: 1; padding: 10px; border: 1.5px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 12px; }
+        .btn-salvar-url { padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .url-status { font-size: 12px; padding: 6px 10px; border-radius: 6px; margin-top: 4px; }
+        .url-status.ok { background: #e8f5e9; color: #2e7d32; }
+        .url-status.vazio { background: #fff3e0; color: #e65100; }
+        
+        .resumo-estoque {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
         }
-
-        .log-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0;
-            font-size: 13px;
+        .resumo-item {
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #667eea30;
         }
-
-        .log-item:last-child { border-bottom: none; }
-
-        .log-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-top: 4px;
-            flex-shrink: 0;
+        .resumo-item .numero { font-size: 28px; font-weight: bold; color: #667eea; }
+        .resumo-item .label { font-size: 12px; color: #666; margin-top: 4px; }
+        
+        .estoque-alerta {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
-
-        .log-dot.ok { background: #4caf50; }
-        .log-dot.erro { background: #f44336; }
-        .log-dot.enviando { background: #ff9800; animation: pulse 1s infinite; }
-
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-        .log-text { color: #444; line-height: 1.4; }
-        .log-hora { color: #aaa; font-size: 11px; }
-
-        .empty-log { color: #aaa; text-align: center; padding: 20px; font-size: 13px; }
-
-        /* iframe oculto para envio */
+        
+        .pagina { display: none; }
+        .pagina.ativa { display: block; }
+        
         #hidden_iframe { display: none; }
-
-        .instrucoes {
-            background: #f0f4ff;
-            border: 1px solid #c5cff7;
-            border-radius: 10px;
-            padding: 14px 16px;
-            margin-bottom: 16px;
-            font-size: 13px;
-            color: #3d4b8a;
-            line-height: 1.6;
-        }
-
-        .instrucoes strong { display: block; margin-bottom: 6px; font-size: 14px; }
     </style>
 </head>
 <body>
 <div class="container">
     <header>
         <h1>🎽 CONTROLE DE UNIFORMES</h1>
-        <p>Opção Telecom</p>
+        <p>Opção Telecom - Gestão de Estoque</p>
     </header>
 
     <!-- Config URL -->
     <div class="card">
         <h3>⚙️ Configuração da Planilha</h3>
         <div class="url-bar">
-            <input type="text" id="inputUrl" placeholder="Cole aqui a URL do seu Apps Script..." />
+            <input type="text" id="inputUrl" placeholder="Cole aqui a URL do seu Apps Script..." value="https://script.google.com/macros/s/AKfycbz9rFtNY0jd3FvqsNGXp4g5Du-g7p10GYSwDq8ztZl4Gdc8pJ_acnSjztIDdG1EHaZ7Hg/exec" />
             <button class="btn-salvar-url" onclick="salvarUrl()">Salvar</button>
         </div>
-        <div id="urlStatus" class="url-status vazio">⚠️ URL não configurada — cole a URL do seu Apps Script acima</div>
+        <div id="urlStatus" class="url-status ok">✅ URL configurada</div>
     </div>
 
-    <!-- Formulário -->
-    <div class="card">
-        <h3>📝 Registrar Movimentação</h3>
-
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Tipo de Uniforme *</label>
-                <select id="uniformeTipo" required>
-                    <option value="">Selecione...</option>
-                    <option>Camiseta Manga Curta</option>
-                    <option>Camiseta Manga Longa</option>
-                    <option>Calça</option>
-                    <option>Jaqueta</option>
-                    <option>Bermuda</option>
-                    <option>Touca</option>
-                    <option>Luvas</option>
-                    <option>Colete</option>
-                    <option>Capacete</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Tamanho *</label>
-                <select id="tamanho" required>
-                    <option value="">Selecione...</option>
-                    <option>PP</option><option>P</option><option>P Feminino</option>
-                    <option>M</option><option>M Feminino</option>
-                    <option>G</option><option>G Feminino</option>
-                    <option>GG</option><option>GG Feminino</option>
-                    <option>XGG</option><option>Único</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Local / Setor *</label>
-                <input type="text" id="local" placeholder="Ex: Almoxarifado, Obra SP" required>
-            </div>
-            <div class="form-group">
-                <label>Quantidade *</label>
-                <input type="number" id="quantidade" min="1" value="1" required>
-            </div>
-        </div>
-
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Destinatário *</label>
-                <input type="text" id="destinatario" placeholder="Nome do colaborador" required>
-            </div>
-            <div class="form-group">
-                <label>Data *</label>
-                <input type="date" id="data" required>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>Tipo de Movimento *</label>
-            <div class="radio-group">
-                <div class="radio-btn entrada ativo" id="btnEntrada" onclick="setMovimento('entrada')">📥 ENTRADA</div>
-                <div class="radio-btn saida" id="btnSaida" onclick="setMovimento('saida')">📤 SAÍDA</div>
-            </div>
-            <input type="hidden" id="tipoMovimento" value="entrada">
-        </div>
-
-        <div class="form-group">
-            <label>Observação</label>
-            <textarea id="observacao" rows="2" placeholder="Informações adicionais..."></textarea>
-        </div>
-
-        <button class="btn-enviar" id="btnEnviar" onclick="enviarRegistro()">💾 SALVAR NA PLANILHA</button>
+    <!-- Navegação -->
+    <div class="nav-tabs">
+        <button class="nav-tab ativo" onclick="mudarPagina('movimentacao', this)">📊 MOVIMENTAÇÕES</button>
+        <button class="nav-tab" onclick="mudarPagina('estoque', this)">📦 ESTOQUE INICIAL</button>
+        <button class="nav-tab" onclick="mudarPagina('relatorios', this)">📈 RELATÓRIOS</button>
     </div>
 
-    <!-- Log -->
-    <div class="card">
-        <h3>📋 Histórico de Envios</h3>
-        <div class="log" id="log">
-            <div class="empty-log">Nenhum registro enviado ainda</div>
+    <!-- PÁGINA 1: MOVIMENTAÇÕES -->
+    <div id="paginaMovimentacao" class="pagina ativa">
+        <div class="card">
+            <h3>📝 Registrar Saída/Entrada</h3>
+            
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Tipo de Uniforme *</label>
+                    <select id="mov_uniforme" required>
+                        <option value="">Selecione...</option>
+                        <option>Camiseta Manga Curta</option><option>Camiseta Manga Longa</option>
+                        <option>Calça</option><option>Jaqueta</option><option>Bermuda</option>
+                        <option>Touca</option><option>Luvas</option><option>Colete</option><option>Capacete</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tamanho *</label>
+                    <select id="mov_tamanho" required>
+                        <option value="">Selecione...</option>
+                        <option>PP</option><option>P</option><option>P Feminino</option>
+                        <option>M</option><option>M Feminino</option><option>G</option>
+                        <option>G Feminino</option><option>GG</option><option>GG Feminino</option><option>XGG</option><option>Único</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Local / Setor *</label>
+                    <input type="text" id="mov_local" placeholder="Ex: Almoxarifado, Obra SP" required>
+                </div>
+                <div class="form-group">
+                    <label>Quantidade *</label>
+                    <input type="number" id="mov_quantidade" min="1" value="1" required>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Destinatário *</label>
+                    <input type="text" id="mov_destinatario" placeholder="Nome do colaborador" required>
+                </div>
+                <div class="form-group">
+                    <label>Data *</label>
+                    <input type="date" id="mov_data" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Tipo de Movimento *</label>
+                <div class="radio-group">
+                    <div class="radio-btn entrada ativo" id="btnEntrada" onclick="setMovimento('entrada')">📥 ENTRADA</div>
+                    <div class="radio-btn saida" id="btnSaida" onclick="setMovimento('saida')">📤 SAÍDA</div>
+                </div>
+                <input type="hidden" id="mov_tipoMovimento" value="entrada">
+            </div>
+            
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>📊 Estoque Inicial (antes)</label>
+                    <input type="text" id="mov_estoque_inicial" readonly style="background:#f0f0f0; font-weight:bold;">
+                </div>
+                <div class="form-group">
+                    <label>📊 Estoque Final (depois)</label>
+                    <input type="text" id="mov_estoque_final" readonly style="background:#f0f0f0; font-weight:bold;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Observação</label>
+                <textarea id="mov_observacao" rows="2" placeholder="Informações adicionais..."></textarea>
+            </div>
+
+            <button class="btn-primary" onclick="enviarMovimentacao()">💾 SALVAR MOVIMENTAÇÃO</button>
+        </div>
+
+        <div class="card">
+            <h3>📋 Últimas Movimentações</h3>
+            <div class="table-wrapper">
+                <table id="tabelaMovimentacoes">
+                    <thead><tr><th>Data</th><th>Uniforme</th><th>Tamanho</th><th>Local</th><th>Qtd</th><th>Destinatário</th><th>Tipo</th><th>Est.Inicial</th><th>Est.Final</th></tr></thead>
+                    <tbody id="movimentacoesBody"><tr><td colspan="9" style="text-align:center">Nenhuma movimentação</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 2: ESTOQUE INICIAL -->
+    <div id="paginaEstoque" class="pagina">
+        <div class="card">
+            <h3>📦 Cadastrar/Atualizar Estoque Inicial</h3>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Uniforme *</label>
+                    <select id="est_uniforme" required>
+                        <option value="">Selecione...</option>
+                        <option>Camiseta Manga Curta</option><option>Camiseta Manga Longa</option>
+                        <option>Calça</option><option>Jaqueta</option><option>Bermuda</option>
+                        <option>Touca</option><option>Luvas</option><option>Colete</option><option>Capacete</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tamanho *</label>
+                    <select id="est_tamanho" required>
+                        <option value="">Selecione...</option>
+                        <option>PP</option><option>P</option><option>P Feminino</option>
+                        <option>M</option><option>M Feminino</option><option>G</option>
+                        <option>G Feminino</option><option>GG</option><option>GG Feminino</option><option>XGG</option><option>Único</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantidade em Estoque *</label>
+                    <input type="number" id="est_quantidade" min="0" value="0" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Local de Armazenamento</label>
+                <input type="text" id="est_local" placeholder="Ex: Almoxarifado Central">
+            </div>
+            <button class="btn-primary" onclick="salvarEstoqueInicial()">💾 SALVAR ESTOQUE</button>
+        </div>
+
+        <div class="card">
+            <h3>📊 Estoque Atual</h3>
+            <div class="resumo-estoque">
+                <div class="resumo-item"><div class="numero" id="totalItens">0</div><div class="label">Total de Itens</div></div>
+                <div class="resumo-item"><div class="numero" id="totalTipos">0</div><div class="label">Tipos de Uniforme</div></div>
+                <div class="resumo-item"><div class="numero" id="valorTotal">R$ 0</div><div class="label">Valor Estimado</div></div>
+            </div>
+            <div class="table-wrapper">
+                <table id="tabelaEstoque">
+                    <thead><tr><th>Uniforme</th><th>Tamanho</th><th>Quantidade</th><th>Local</th><th>Última Atualização</th><th>Ações</th></tr></thead>
+                    <tbody id="estoqueBody"><tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 3: RELATÓRIOS -->
+    <div id="paginaRelatorios" class="pagina">
+        <div class="card">
+            <h3>📈 Relatório Consolidado</h3>
+            <div class="table-wrapper">
+                <table id="tabelaRelatorio">
+                    <thead><tr><th>Uniforme</th><th>Tamanho</th><th>Estoque Atual</th><th>Total Entradas</th><th>Total Saídas</th><th>Saldo</th></tr></thead>
+                    <tbody id="relatorioBody"><tr><td colspan="6" style="text-align:center">Carregando...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <h3>📊 Gráfico de Movimentações</h3>
+            <canvas id="graficoMov" style="max-height: 300px; width: 100%;"></canvas>
         </div>
     </div>
 </div>
 
-<!-- iframe oculto — método que bypassa o CORS -->
 <iframe name="hidden_iframe" id="hidden_iframe"></iframe>
+<form id="formOculto" method="POST" target="hidden_iframe" style="display:none"></form>
 
-<!-- form oculto que realmente envia os dados -->
-<form id="formOculto" method="POST" target="hidden_iframe" style="display:none">
-    <input type="hidden" name="data" id="f_data">
-    <input type="hidden" name="uniforme_tipo" id="f_uniforme_tipo">
-    <input type="hidden" name="tamanho" id="f_tamanho">
-    <input type="hidden" name="local" id="f_local">
-    <input type="hidden" name="quantidade" id="f_quantidade">
-    <input type="hidden" name="destinatario" id="f_destinatario">
-    <input type="hidden" name="tipo_movimento" id="f_tipo_movimento">
-    <input type="hidden" name="observacao" id="f_observacao">
-    <input type="hidden" name="timestamp" id="f_timestamp">
-</form>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // URL do Google Apps Script
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz9rFtNY0jd3FvqsNGXp4g5Du-g7p10GYSwDq8ztZl4Gdc8pJ_acnSjztIDdG1EHaZ7Hg/exec';
+    
     let tipoMovimento = 'entrada';
+    let estoque = [];
+    let movimentacoes = [];
+    let grafico;
 
+    // Inicialização
+    document.getElementById('inputUrl').value = SCRIPT_URL;
+    document.getElementById('mov_data').valueAsDate = new Date();
+    carregarDados();
+    
+    function carregarDados() {
+        const savedEstoque = localStorage.getItem('opcao_telecom_estoque');
+        if(savedEstoque) estoque = JSON.parse(savedEstoque);
+        const savedMov = localStorage.getItem('opcao_telecom_movimentacoes');
+        if(savedMov) movimentacoes = JSON.parse(savedMov);
+        atualizarTabelaEstoque();
+        atualizarTabelaMovimentacoes();
+        atualizarRelatorio();
+        atualizarGrafico();
+    }
+    
+    function salvarEstoqueLocal() { localStorage.setItem('opcao_telecom_estoque', JSON.stringify(estoque)); }
+    function salvarMovimentacoesLocal() { localStorage.setItem('opcao_telecom_movimentacoes', JSON.stringify(movimentacoes)); }
+    
+    function getEstoqueAtual(uniforme, tamanho) {
+        const item = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
+        return item ? item.quantidade : 0;
+    }
+    
+    function atualizarEstoque(uniforme, tamanho, quantidade, tipo, local) {
+        const index = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
+        if(index === -1 && tipo === 'entrada') {
+            estoque.push({ uniforme, tamanho, quantidade, local: local || 'Almoxarifado', ultimaAtualizacao: new Date().toLocaleString('pt-BR') });
+        } else if(index !== -1) {
+            if(tipo === 'entrada') estoque[index].quantidade += quantidade;
+            else { estoque[index].quantidade -= quantidade; if(estoque[index].quantidade < 0) estoque[index].quantidade = 0; }
+            estoque[index].ultimaAtualizacao = new Date().toLocaleString('pt-BR');
+            if(local) estoque[index].local = local;
+        }
+        salvarEstoqueLocal();
+        atualizarTabelaEstoque();
+        atualizarRelatorio();
+    }
+    
+    function verificarEstoque(uniforme, tamanho, quantidade) {
+        const atual = getEstoqueAtual(uniforme, tamanho);
+        document.getElementById('mov_estoque_inicial').value = atual;
+        const final = tipoMovimento === 'entrada' ? atual + quantidade : atual - quantidade;
+        document.getElementById('mov_estoque_final').value = final >= 0 ? final : 0;
+        if(tipoMovimento === 'saida' && final < 0) { alert(`⚠️ Estoque insuficiente! Disponível: ${atual}`); return false; }
+        return true;
+    }
+    
+    function enviarParaPlanilha(dados) {
+        const form = document.getElementById('formOculto');
+        form.innerHTML = '';
+        form.action = SCRIPT_URL;
+        for(let key in dados) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = dados[key];
+            form.appendChild(input);
+        }
+        form.submit();
+    }
+    
     function setMovimento(tipo) {
         tipoMovimento = tipo;
-        document.getElementById('tipoMovimento').value = tipo;
+        document.getElementById('mov_tipoMovimento').value = tipo;
         document.getElementById('btnEntrada').className = 'radio-btn entrada' + (tipo === 'entrada' ? ' ativo' : '');
         document.getElementById('btnSaida').className = 'radio-btn saida' + (tipo === 'saida' ? ' ativo' : '');
+        const uniforme = document.getElementById('mov_uniforme').value;
+        const tamanho = document.getElementById('mov_tamanho').value;
+        const qtd = parseInt(document.getElementById('mov_quantidade').value);
+        if(uniforme && tamanho) verificarEstoque(uniforme, tamanho, qtd);
     }
-
-    function salvarUrl() {
-        const url = document.getElementById('inputUrl').value.trim();
-        if (!url.startsWith('https://script.google.com')) {
-            alert('URL inválida. Use a URL do Apps Script (começa com https://script.google.com)');
-            return;
-        }
-        localStorage.setItem('apps_script_url', url);
-        atualizarStatusUrl(url);
-        alert('✅ URL salva!');
-    }
-
-    function atualizarStatusUrl(url) {
-        const el = document.getElementById('urlStatus');
-        if (url) {
-            el.className = 'url-status ok';
-            el.textContent = '✅ Conectado: ' + url.substring(0, 60) + '...';
-        } else {
-            el.className = 'url-status vazio';
-            el.textContent = '⚠️ URL não configurada — cole a URL do seu Apps Script acima';
-        }
-    }
-
-    function adicionarLog(texto, tipo) {
-        const log = document.getElementById('log');
-        const empty = log.querySelector('.empty-log');
-        if (empty) empty.remove();
-
-        const agora = new Date();
-        const hora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-        const item = document.createElement('div');
-        item.className = 'log-item';
-        item.innerHTML = `
-            <div class="log-dot ${tipo}"></div>
-            <div>
-                <div class="log-text">${texto}</div>
-                <div class="log-hora">${hora}</div>
-            </div>
-        `;
-        log.insertBefore(item, log.firstChild);
-    }
-
-    function enviarRegistro() {
-        const url = localStorage.getItem('apps_script_url');
-        if (!url) {
-            alert('⚠️ Configure a URL do Apps Script primeiro!');
-            return;
-        }
-
-        const tipo = document.getElementById('uniformeTipo').value;
-        const tamanho = document.getElementById('tamanho').value;
-        const local = document.getElementById('local').value.trim();
-        const qtd = document.getElementById('quantidade').value;
-        const dest = document.getElementById('destinatario').value.trim();
-        const data = document.getElementById('data').value;
-
-        if (!tipo || !tamanho || !local || !qtd || !dest || !data) {
+    
+    function enviarMovimentacao() {
+        const uniforme = document.getElementById('mov_uniforme').value;
+        const tamanho = document.getElementById('mov_tamanho').value;
+        const local = document.getElementById('mov_local').value.trim();
+        const quantidade = parseInt(document.getElementById('mov_quantidade').value);
+        const destinatario = document.getElementById('mov_destinatario').value.trim();
+        const data = document.getElementById('mov_data').value;
+        const observacao = document.getElementById('mov_observacao').value || '';
+        const tipo = tipoMovimento;
+        
+        if(!uniforme || !tamanho || !local || !destinatario || !data) {
             alert('❌ Preencha todos os campos obrigatórios!');
             return;
         }
-
-        // Preenche o form oculto
-        document.getElementById('f_data').value = data;
-        document.getElementById('f_uniforme_tipo').value = tipo;
-        document.getElementById('f_tamanho').value = tamanho;
-        document.getElementById('f_local').value = local;
-        document.getElementById('f_quantidade').value = qtd;
-        document.getElementById('f_destinatario').value = dest;
-        document.getElementById('f_tipo_movimento').value = tipoMovimento;
-        document.getElementById('f_observacao').value = document.getElementById('observacao').value || '';
-        document.getElementById('f_timestamp').value = new Date().toISOString();
-
-        // Define a action do form com a URL
-        document.getElementById('formOculto').action = url;
-
-        const btn = document.getElementById('btnEnviar');
-        btn.disabled = true;
-        btn.textContent = '⏳ Enviando...';
-
-        adicionarLog(`Enviando: ${tipo} (${tamanho}) — ${dest}`, 'enviando');
-
-        // Submete via iframe (sem CORS)
-        document.getElementById('formOculto').submit();
-
-        // Após 3s assume que foi com sucesso (o iframe não retorna resposta visível)
-        setTimeout(() => {
-            btn.disabled = false;
-            btn.textContent = '💾 SALVAR NA PLANILHA';
-
-            // Atualiza o log
-            const dots = document.querySelectorAll('.log-dot.enviando');
-            dots.forEach(d => d.className = 'log-dot ok');
-
-            adicionarLog(`✅ Enviado: ${tipo} ${tamanho} | ${dest} | ${tipoMovimento.toUpperCase()} | ${qtd} unid.`, 'ok');
-
-            // Limpa o formulário
-            document.getElementById('uniformeTipo').value = '';
-            document.getElementById('tamanho').value = '';
-            document.getElementById('local').value = '';
-            document.getElementById('quantidade').value = '1';
-            document.getElementById('destinatario').value = '';
-            document.getElementById('observacao').value = '';
-            document.getElementById('data').valueAsDate = new Date();
-            setMovimento('entrada');
-        }, 3000);
+        
+        const estoqueInicial = getEstoqueAtual(uniforme, tamanho);
+        let estoqueFinal = estoqueInicial;
+        if(tipo === 'entrada') estoqueFinal = estoqueInicial + quantidade;
+        else if(quantidade > estoqueInicial) { alert(`⚠️ Estoque insuficiente! Disponível: ${estoqueInicial}`); return; }
+        else estoqueFinal = estoqueInicial - quantidade;
+        
+        const mov = { id: Date.now(), data, uniforme, tamanho, local, quantidade, destinatario, tipo, estoqueInicial, estoqueFinal, observacao, timestamp: new Date().toISOString() };
+        movimentacoes.unshift(mov);
+        salvarMovimentacoesLocal();
+        atualizarEstoque(uniforme, tamanho, quantidade, tipo, local);
+        enviarParaPlanilha(mov);
+        
+        alert('✅ Movimentação salva com sucesso!');
+        document.getElementById('mov_local').value = '';
+        document.getElementById('mov_destinatario').value = '';
+        document.getElementById('mov_observacao').value = '';
+        document.getElementById('mov_quantidade').value = '1';
+        document.getElementById('mov_estoque_inicial').value = '';
+        document.getElementById('mov_estoque_final').value = '';
+        atualizarTabelaMovimentacoes();
+        atualizarGrafico();
     }
-
-    // Ao carregar
-    document.getElementById('data').valueAsDate = new Date();
-    const urlSalva = localStorage.getItem('apps_script_url');
-    if (urlSalva) {
-        document.getElementById('inputUrl').value = urlSalva;
-        atualizarStatusUrl(urlSalva);
+    
+    function salvarEstoqueInicial() {
+        const uniforme = document.getElementById('est_uniforme').value;
+        const tamanho = document.getElementById('est_tamanho').value;
+        const quantidade = parseInt(document.getElementById('est_quantidade').value);
+        const local = document.getElementById('est_local').value || 'Almoxarifado';
+        if(!uniforme || !tamanho) { alert('❌ Selecione uniforme e tamanho!'); return; }
+        
+        const index = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
+        if(index !== -1) {
+            estoque[index].quantidade = quantidade;
+            estoque[index].local = local;
+            estoque[index].ultimaAtualizacao = new Date().toLocaleString('pt-BR');
+        } else {
+            estoque.push({ uniforme, tamanho, quantidade, local, ultimaAtualizacao: new Date().toLocaleString('pt-BR') });
+        }
+        salvarEstoqueLocal();
+        atualizarTabelaEstoque();
+        atualizarRelatorio();
+        alert('✅ Estoque salvo com sucesso!');
     }
+    
+    function editarEstoque(uniforme, tamanho) {
+        const item = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
+        if(item) {
+            document.getElementById('est_uniforme').value = uniforme;
+            document.getElementById('est_tamanho').value = tamanho;
+            document.getElementById('est_quantidade').value = item.quantidade;
+            document.getElementById('est_local').value = item.local || '';
+            mudarPagina('estoque', document.querySelector('.nav-tab:nth-child(2)'));
+            alert('✅ Produto carregado para edição!');
+        }
+    }
+    
+    function excluirEstoque(uniforme, tamanho) {
+        if(confirm(`⚠️ Tem certeza que deseja remover ${uniforme} - ${tamanho} do estoque?`)) {
+            estoque = estoque.filter(e => !(e.uniforme === uniforme && e.tamanho === tamanho));
+            salvarEstoqueLocal();
+            atualizarTabelaEstoque();
+            atualizarRelatorio();
+            alert('✅ Produto removido!');
+        }
+    }
+    
+    function atualizarTabelaEstoque() {
+        const tbody = document.getElementById('estoqueBody');
+        const totalItens = estoque.reduce((sum, i) => sum + i.quantidade, 0);
+        document.getElementById('totalItens').textContent = totalItens;
+        document.getElementById('totalTipos').textContent = estoque.length;
+        
+        if(estoque.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto</td></tr>'; return; }
+        tbody.innerHTML = estoque.map(i => `<tr><td>${i.uniforme}</td><td>${i.tamanho}</td><td><strong>${i.quantidade}</strong></td><td>${i.local || '-'}</td><td>${i.ultimaAtualizacao || '-'}</td><td><button onclick="editarEstoque('${i.uniforme}', '${i.tamanho}')" style="padding:4px 8px;background:#667eea;color:white;border:none;border-radius:4px;cursor:pointer;margin-right:5px">✏️</button><button onclick="excluirEstoque('${i.uniforme}', '${i.tamanho}')" style="padding:4px 8px;background:#f44336;color:white;border:none;border-radius:4px;cursor:pointer">🗑️</button></td></tr>`).join('');
+    }
+    
+    function atualizarTabelaMovimentacoes() {
+        const tbody = document.getElementById('movimentacoesBody');
+        if(movimentacoes.length === 0) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center">Nenhuma movimentação</td></tr>'; return; }
+        tbody.innerHTML = movimentacoes.slice(0, 50).map(m => `<tr><td>${m.data}</td><td>${m.uniforme}</td><td>${m.tamanho}</td><td>${m.local}</td><td>${m.quantidade}</td><td>${m.destinatario}</td><td><span class="badge ${m.tipo}">${m.tipo === 'entrada' ? '📥 ENTRADA' : '📤 SAÍDA'}</span></td><td>${m.estoqueInicial}</td><td>${m.estoqueFinal}</td></tr>`).join('');
+    }
+    
+    function atualizarRelatorio() {
+        const tbody = document.getElementById('relatorioBody');
+        const relatorio = estoque.map(item => {
+            const entradas = movimentacoes.filter(m => m.uniforme === item.uniforme && m.tamanho === item.tamanho && m.tipo === 'entrada').reduce((s, m) => s + m.quantidade, 0);
+            const saidas = movimentacoes.filter(m => m.uniforme === item.uniforme && m.tamanho === item.tamanho && m.tipo === 'saida').reduce((s, m) => s + m.quantidade, 0);
+            return { uniforme: item.uniforme, tamanho: item.tamanho, estoque: item.quantidade, entradas, saidas };
+        });
+        if(relatorio.length === 0) { tbody.innerHTML = '<td><td colspan="6" style="text-align:center">Nenhum dado</td></tr>'; return; }
+        tbody.innerHTML = relatorio.map(r => `<tr><td>${r.uniforme}</td><td>${r.tamanho}</td><td><strong>${r.estoque}</strong></td><td>${r.entradas}</td><td>${r.saidas}</td><td>${r.estoque}</td></tr>`).join('');
+    }
+    
+    function atualizarGrafico() {
+        const entradasPorDia = {};
+        movimentacoes.forEach(m => { if(m.tipo === 'entrada') entradasPorDia[m.data] = (entradasPorDia[m.data] || 0) + m.quantidade; });
+        const saidasPorDia = {};
+        movimentacoes.forEach(m => { if(m.tipo === 'saida') saidasPorDia[m.data] = (saidasPorDia[m.data] || 0) + m.quantidade; });
+        const datas = [...new Set([...Object.keys(entradasPorDia), ...Object.keys(saidasPorDia)])].sort();
+        
+        if(grafico) grafico.destroy();
+        const ctx = document.getElementById('graficoMov').getContext('2d');
+        grafico = new Chart(ctx, {
+            type: 'bar', data: { labels: datas.slice(-7),
+                datasets: [{ label: 'Entradas', data: datas.slice(-7).map(d => entradasPorDia[d] || 0), backgroundColor: '#4caf50' },
+                           { label: 'Saídas', data: datas.slice(-7).map(d => saidasPorDia[d] || 0), backgroundColor: '#f44336' }] },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } } }
+        });
+    }
+    
+    function mudarPagina(pagina, elemento) {
+        document.querySelectorAll('.pagina').forEach(p => p.classList.remove('ativa'));
+        document.getElementById(`pagina${pagina.charAt(0).toUpperCase() + pagina.slice(1)}`).classList.add('ativa');
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('ativo'));
+        if(elemento) elemento.classList.add('ativo');
+        if(pagina === 'relatorios') atualizarGrafico();
+    }
+    
+    function salvarUrl() {
+        const url = document.getElementById('inputUrl').value.trim();
+        if(!url.startsWith('https://script.google.com')) { alert('URL inválida!'); return; }
+        localStorage.setItem('apps_script_url', url);
+        document.getElementById('urlStatus').className = 'url-status ok';
+        document.getElementById('urlStatus').textContent = '✅ Conectado: ' + url.substring(0, 60) + '...';
+        alert('✅ URL salva! Recarregue a página para aplicar.');
+        location.reload();
+    }
+    
+    // Event listeners
+    document.getElementById('mov_uniforme')?.addEventListener('change', () => {
+        const u = document.getElementById('mov_uniforme').value;
+        const t = document.getElementById('mov_tamanho').value;
+        const q = parseInt(document.getElementById('mov_quantidade').value);
+        if(u && t) verificarEstoque(u, t, q);
+    });
+    document.getElementById('mov_tamanho')?.addEventListener('change', () => {
+        const u = document.getElementById('mov_uniforme').value;
+        const t = document.getElementById('mov_tamanho').value;
+        const q = parseInt(document.getElementById('mov_quantidade').value);
+        if(u && t) verificarEstoque(u, t, q);
+    });
+    document.getElementById('mov_quantidade')?.addEventListener('input', () => {
+        const u = document.getElementById('mov_uniforme').value;
+        const t = document.getElementById('mov_tamanho').value;
+        const q = parseInt(document.getElementById('mov_quantidade').value);
+        if(u && t) verificarEstoque(u, t, q);
+    });
 </script>
 </body>
 </html>
