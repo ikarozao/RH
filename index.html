@@ -6,23 +6,14 @@
     <title>Controle de Uniformes - Opção Telecom</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #1a1a2e;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px 16px;
         }
-
         .container { max-width: 1400px; margin: 0 auto; }
-
-        /* Navegação */
-        .nav-tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
+        .nav-tabs { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
         .nav-tab {
             background: rgba(255,255,255,0.1);
             color: white;
@@ -30,24 +21,15 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: bold;
+            transition: all 0.2s;
             border: none;
             font-size: 14px;
-            transition: all 0.2s;
         }
-        .nav-tab.ativo {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            box-shadow: 0 4px 15px rgba(102,126,234,0.4);
-        }
+        .nav-tab.ativo { background: linear-gradient(135deg, #667eea, #764ba2); box-shadow: 0 4px 15px rgba(102,126,234,0.4); }
         .nav-tab:hover { background: rgba(255,255,255,0.2); }
-
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 28px;
-        }
-        header h1 { font-size: 1.8em; letter-spacing: 1px; }
-        header p { opacity: 0.8; margin-top: 5px; }
-
+        header { text-align: center; color: white; margin-bottom: 28px; }
+        header h1 { font-size: 1.7em; letter-spacing: 1px; }
+        header p { opacity: 0.7; font-size: 0.9em; margin-top: 4px; }
         .card {
             background: white;
             border-radius: 16px;
@@ -62,10 +44,8 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #667eea;
         }
-
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-
         .form-group { margin-bottom: 13px; }
         .form-group label {
             display: block;
@@ -88,7 +68,6 @@
             border-color: #667eea;
             background: white;
         }
-
         .btn-primary {
             width: 100%;
             padding: 14px;
@@ -102,32 +81,11 @@
             margin-top: 6px;
         }
         .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .table-wrapper {
-            overflow-x: auto;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-            font-size: 13px;
-        }
-        th {
-            background: #f8f9fa;
-            color: #555;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-        }
+        .table-wrapper { overflow-x: auto; margin-top: 16px; max-height: 400px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; }
+        th { background: #f8f9fa; color: #555; font-weight: 600; position: sticky; top: 0; }
         tr:hover { background: #f5f5f5; }
-
         .badge {
             display: inline-block;
             padding: 4px 10px;
@@ -137,7 +95,6 @@
         }
         .badge.entrada { background: #e8f5e9; color: #2e7d32; }
         .badge.saida { background: #ffebee; color: #c62828; }
-
         .radio-group { display: flex; gap: 10px; }
         .radio-btn {
             flex: 1;
@@ -148,14 +105,18 @@
             cursor: pointer;
             font-weight: 600;
             background: #fafafa;
-            transition: all 0.2s;
         }
         .radio-btn.entrada.ativo { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
         .radio-btn.saida.ativo { background: #ffebee; border-color: #f44336; color: #c62828; }
-
+        .url-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+        .url-bar input { flex: 1; padding: 10px; border: 1.5px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 12px; }
+        .btn-salvar-url { padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .url-status { font-size: 12px; padding: 6px 10px; border-radius: 6px; margin-top: 4px; }
+        .url-status.ok { background: #e8f5e9; color: #2e7d32; }
+        .url-status.vazio { background: #fff3e0; color: #e65100; }
         .resumo-estoque {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 16px;
             margin-bottom: 20px;
         }
@@ -168,10 +129,8 @@
         }
         .resumo-item .numero { font-size: 28px; font-weight: bold; color: #667eea; }
         .resumo-item .label { font-size: 12px; color: #666; margin-top: 4px; }
-
         .pagina { display: none; }
         .pagina.ativa { display: block; }
-
         .toast {
             position: fixed;
             bottom: 30px;
@@ -183,23 +142,10 @@
             border-radius: 8px;
             z-index: 1000;
             display: none;
-            font-size: 14px;
         }
         .toast.show { display: block; }
         .toast.success { background: #4caf50; }
         .toast.error { background: #f44336; }
-        .toast.warning { background: #ff9800; }
-
-        .status-conexao {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 13px;
-            font-weight: bold;
-        }
-        .status-conexao.online { background: #e8f5e9; color: #2e7d32; }
-        .status-conexao.offline { background: #ffebee; color: #c62828; }
     </style>
 </head>
 <body>
@@ -209,42 +155,33 @@
         <p>Opção Telecom - Gestão de Estoque</p>
     </header>
 
-    <!-- Status da Conexão -->
     <div class="card">
-        <h3>⚙️ Status do Sistema</h3>
-        <div id="statusConexao" class="status-conexao online">✅ Conectado ao Google Sheets</div>
-        <div style="font-size: 12px; color: #666; margin-top: 10px; text-align: center;">
-            📌 Dados salvos localmente e enviados para a planilha automaticamente
+        <h3>⚙️ Configuração da Planilha</h3>
+        <div class="url-bar">
+            <input type="text" id="inputUrl" placeholder="Cole aqui a URL do seu Apps Script..." />
+            <button class="btn-salvar-url" onclick="salvarUrl()">Salvar</button>
         </div>
+        <div id="urlStatus" class="url-status vazio">⚠️ URL não configurada</div>
     </div>
 
-    <!-- Navegação -->
     <div class="nav-tabs">
         <button class="nav-tab ativo" onclick="mudarPagina('movimentacao', this)">📊 MOVIMENTAÇÕES</button>
         <button class="nav-tab" onclick="mudarPagina('estoque', this)">📦 ESTOQUE INICIAL</button>
         <button class="nav-tab" onclick="mudarPagina('relatorios', this)">📈 RELATÓRIOS</button>
     </div>
 
-    <!-- PÁGINA 1: MOVIMENTAÇÕES -->
+    <!-- PÁGINA MOVIMENTAÇÕES -->
     <div id="paginaMovimentacao" class="pagina ativa">
         <div class="card">
             <h3>📝 Registrar Saída/Entrada</h3>
-            
             <div class="grid-2">
                 <div class="form-group">
                     <label>Tipo de Uniforme *</label>
                     <select id="mov_uniforme" required>
                         <option value="">Selecione...</option>
-                        <option>Camiseta Manga Curta</option>
-                        <option>Camiseta Manga Longa</option>
-                        <option>Calça</option>
-                        <option>Jaqueta</option>
-                        <option>Bermuda</option>
-                        <option>Touca</option>
-                        <option>Luvas</option>
-                        <option>Colete</option>
-                        <option>Capacete</option>
-                        <option>Uniforme Completo</option>
+                        <option>Camiseta Manga Curta</option><option>Camiseta Manga Longa</option>
+                        <option>Calça</option><option>Jaqueta</option><option>Bermuda</option>
+                        <option>Touca</option><option>Luvas</option><option>Colete</option><option>Capacete</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -253,12 +190,10 @@
                         <option value="">Selecione...</option>
                         <option>PP</option><option>P</option><option>P Feminino</option>
                         <option>M</option><option>M Feminino</option><option>G</option>
-                        <option>G Feminino</option><option>GG</option><option>GG Feminino</option>
-                        <option>XGG</option><option>Único</option>
+                        <option>G Feminino</option><option>GG</option><option>GG Feminino</option><option>XGG</option><option>Único</option>
                     </select>
                 </div>
             </div>
-
             <div class="grid-2">
                 <div class="form-group">
                     <label>Local / Setor *</label>
@@ -269,7 +204,6 @@
                     <input type="number" id="mov_quantidade" min="1" value="1" required>
                 </div>
             </div>
-
             <div class="grid-2">
                 <div class="form-group">
                     <label>Destinatário *</label>
@@ -280,7 +214,6 @@
                     <input type="date" id="mov_data" required>
                 </div>
             </div>
-
             <div class="form-group">
                 <label>Tipo de Movimento *</label>
                 <div class="radio-group">
@@ -289,63 +222,45 @@
                 </div>
                 <input type="hidden" id="mov_tipoMovimento" value="entrada">
             </div>
-            
             <div class="grid-2">
                 <div class="form-group">
-                    <label>📊 Estoque Inicial (antes)</label>
+                    <label>📊 Estoque Inicial</label>
                     <input type="text" id="mov_estoque_inicial" readonly style="background:#f0f0f0; font-weight:bold;">
                 </div>
                 <div class="form-group">
-                    <label>📊 Estoque Final (depois)</label>
+                    <label>📊 Estoque Final</label>
                     <input type="text" id="mov_estoque_final" readonly style="background:#f0f0f0; font-weight:bold;">
                 </div>
             </div>
-
             <div class="form-group">
                 <label>Observação</label>
-                <textarea id="mov_observacao" rows="2" placeholder="Informações adicionais..."></textarea>
+                <textarea id="mov_observacao" rows="2"></textarea>
             </div>
-
-            <button class="btn-primary" id="btnSalvarMov" onclick="enviarMovimentacao()">💾 SALVAR MOVIMENTAÇÃO</button>
+            <button class="btn-primary" onclick="enviarMovimentacao()">💾 SALVAR MOVIMENTAÇÃO</button>
         </div>
-
         <div class="card">
             <h3>📋 Últimas Movimentações</h3>
             <div class="table-wrapper">
                 <table id="tabelaMovimentacoes">
-                    <thead>
-                        <tr>
-                            <th>Data</th><th>Uniforme</th><th>Tamanho</th><th>Local</th>
-                            <th>Qtd</th><th>Destinatário</th><th>Tipo</th>
-                            <th>Est.Inicial</th><th>Est.Final</th>
-                        </tr>
-                    </thead>
-                    <tbody id="movimentacoesBody">
-                        <tr><td colspan="9" style="text-align:center">Nenhuma movimentação</td></tr>
-                    </tbody>
+                    <thead><tr><th>Data</th><th>Uniforme</th><th>Tamanho</th><th>Local</th><th>Qtd</th><th>Destinatário</th><th>Tipo</th><th>Est.Inicial</th><th>Est.Final</th></tr></thead>
+                    <tbody id="movimentacoesBody"><tr><td colspan="9">Nenhuma movimentação</td></tr></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- PÁGINA 2: ESTOQUE INICIAL -->
+    <!-- PÁGINA ESTOQUE -->
     <div id="paginaEstoque" class="pagina">
         <div class="card">
-            <h3>📦 Cadastrar/Atualizar Estoque Inicial</h3>
+            <h3>📦 Cadastrar Estoque Inicial</h3>
             <div class="grid-3">
                 <div class="form-group">
                     <label>Uniforme *</label>
                     <select id="est_uniforme" required>
                         <option value="">Selecione...</option>
-                        <option>Camiseta Manga Curta</option>
-                        <option>Camiseta Manga Longa</option>
-                        <option>Calça</option>
-                        <option>Jaqueta</option>
-                        <option>Bermuda</option>
-                        <option>Touca</option>
-                        <option>Luvas</option>
-                        <option>Colete</option>
-                        <option>Capacete</option>
+                        <option>Camiseta Manga Curta</option><option>Camiseta Manga Longa</option>
+                        <option>Calça</option><option>Jaqueta</option><option>Bermuda</option>
+                        <option>Touca</option><option>Luvas</option><option>Colete</option><option>Capacete</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -354,8 +269,7 @@
                         <option value="">Selecione...</option>
                         <option>PP</option><option>P</option><option>P Feminino</option>
                         <option>M</option><option>M Feminino</option><option>G</option>
-                        <option>G Feminino</option><option>GG</option><option>GG Feminino</option>
-                        <option>XGG</option><option>Único</option>
+                        <option>G Feminino</option><option>GG</option><option>GG Feminino</option><option>XGG</option><option>Único</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -364,55 +278,34 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>Local de Armazenamento</label>
-                <input type="text" id="est_local" placeholder="Ex: Almoxarifado Central">
+                <label>Local</label>
+                <input type="text" id="est_local" placeholder="Almoxarifado Central">
             </div>
             <button class="btn-primary" onclick="salvarEstoqueInicial()">💾 SALVAR ESTOQUE</button>
         </div>
-
         <div class="card">
             <h3>📊 Estoque Atual</h3>
             <div class="resumo-estoque">
-                <div class="resumo-item">
-                    <div class="numero" id="totalItens">0</div>
-                    <div class="label">Total de Itens em Estoque</div>
-                </div>
-                <div class="resumo-item">
-                    <div class="numero" id="totalTipos">0</div>
-                    <div class="label">Tipos de Uniforme</div>
-                </div>
+                <div class="resumo-item"><div class="numero" id="totalItens">0</div><div class="label">Total de Itens</div></div>
+                <div class="resumo-item"><div class="numero" id="totalTipos">0</div><div class="label">Tipos</div></div>
             </div>
             <div class="table-wrapper">
                 <table id="tabelaEstoque">
-                    <thead>
-                        <tr>
-                            <th>Uniforme</th><th>Tamanho</th><th>Quantidade</th>
-                            <th>Local</th><th>Última Atualização</th><th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="estoqueBody">
-                        <tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado</td></tr>
-                    </tbody>
+                    <thead><tr><th>Uniforme</th><th>Tamanho</th><th>Quantidade</th><th>Local</th><th>Ações</th></tr></thead>
+                    <tbody id="estoqueBody"><tr><td colspan="5">Nenhum produto</td></tr></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- PÁGINA 3: RELATÓRIOS -->
+    <!-- PÁGINA RELATÓRIOS -->
     <div id="paginaRelatorios" class="pagina">
         <div class="card">
             <h3>📈 Relatório Consolidado</h3>
             <div class="table-wrapper">
                 <table id="tabelaRelatorio">
-                    <thead>
-                        <tr>
-                            <th>Uniforme</th><th>Tamanho</th><th>Estoque Atual</th>
-                            <th>Total Entradas</th><th>Total Saídas</th><th>Saldo</th>
-                        </tr>
-                    </thead>
-                    <tbody id="relatorioBody">
-                        <tr><td colspan="6" style="text-align:center">Carregando...</td></tr>
-                    </tbody>
+                    <thead><tr><th>Uniforme</th><th>Tamanho</th><th>Estoque</th><th>Entradas</th><th>Saídas</th><th>Saldo</th></tr></thead>
+                    <tbody id="relatorioBody"><tr><td colspan="6">Carregando...</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -422,147 +315,113 @@
 <div id="toast" class="toast"></div>
 
 <script>
-    // ⚠️ SUA URL DO GOOGLE APPS SCRIPT ⚠️
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbysRFKY0jJS7kgrPryUEuWV_0QTwCvBRD9fuSJIbAOv7uCQKu0nhPluoBW05EL6TKH3oA/exec';
+    // ⚠️ COLE SUA NOVA URL AQUI DEPOIS DE REIMPLANTAR ⚠️
+    let SCRIPT_URL = localStorage.getItem('https://script.google.com/macros/s/AKfycbysRFKY0jJS7kgrPryUEuWV_0QTwCvBRD9fuSJIbAOv7uCQKu0nhPluoBW05EL6TKH3oA/exec') || '';
     
     let tipoMovimento = 'entrada';
     let estoque = [];
     let movimentacoes = [];
-
-    // ========== FUNÇÕES DE UTILIDADE ==========
-    function showToast(message, type = 'success') {
+    
+    function showToast(msg, type) {
         const toast = document.getElementById('toast');
-        toast.textContent = message;
+        toast.textContent = msg;
         toast.className = `toast ${type} show`;
-        setTimeout(() => {
-            toast.className = 'toast';
-        }, 3000);
+        setTimeout(() => toast.className = 'toast', 3000);
     }
-
-    // ========== ENVIO PARA O GOOGLE SHEETS ==========
-    async function enviarParaGoogleSheets(dados) {
-        try {
-            // Criar FormData para envio
-            const formData = new FormData();
-            formData.append('data', dados.data);
-            formData.append('uniforme', dados.uniforme);
-            formData.append('tamanho', dados.tamanho);
-            formData.append('local', dados.local);
-            formData.append('quantidade', dados.quantidade);
-            formData.append('destinatario', dados.destinatario);
-            formData.append('tipo', dados.tipo);
-            formData.append('estoqueInicial', dados.estoqueInicial);
-            formData.append('estoqueFinal', dados.estoqueFinal);
-            formData.append('observacao', dados.observacao || '');
-            formData.append('timestamp', new Date().toISOString());
-
-            // Enviar para o Apps Script
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: formData
-            });
-
-            console.log('Dados enviados para a planilha:', dados);
-            return true;
-        } catch (error) {
-            console.error('Erro ao enviar para planilha:', error);
-            return false;
+    
+    function salvarUrl() {
+        const url = document.getElementById('inputUrl').value.trim();
+        if(!url.startsWith('https://script.google.com')) {
+            alert('URL inválida!');
+            return;
         }
+        localStorage.setItem('apps_script_url', url);
+        SCRIPT_URL = url;
+        document.getElementById('urlStatus').className = 'url-status ok';
+        document.getElementById('urlStatus').textContent = '✅ URL configurada: ' + url.substring(0, 50) + '...';
+        showToast('✅ URL salva com sucesso!', 'success');
     }
-
-    // ========== GERENCIAMENTO LOCAL ==========
+    
     function carregarDados() {
         const savedEstoque = localStorage.getItem('opcao_telecom_estoque');
-        if (savedEstoque) estoque = JSON.parse(savedEstoque);
-        
+        if(savedEstoque) estoque = JSON.parse(savedEstoque);
         const savedMov = localStorage.getItem('opcao_telecom_movimentacoes');
-        if (savedMov) movimentacoes = JSON.parse(savedMov);
-        
+        if(savedMov) movimentacoes = JSON.parse(savedMov);
         atualizarTabelaEstoque();
         atualizarTabelaMovimentacoes();
         atualizarRelatorio();
     }
-
-    function salvarEstoqueLocal() {
-        localStorage.setItem('opcao_telecom_estoque', JSON.stringify(estoque));
-    }
-
-    function salvarMovimentacoesLocal() {
-        localStorage.setItem('opcao_telecom_movimentacoes', JSON.stringify(movimentacoes));
-    }
-
+    
+    function salvarEstoqueLocal() { localStorage.setItem('opcao_telecom_estoque', JSON.stringify(estoque)); }
+    function salvarMovimentacoesLocal() { localStorage.setItem('opcao_telecom_movimentacoes', JSON.stringify(movimentacoes)); }
+    
     function getEstoqueAtual(uniforme, tamanho) {
         const item = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
         return item ? item.quantidade : 0;
     }
-
+    
     function atualizarEstoque(uniforme, tamanho, quantidade, tipo, local) {
         const index = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
-        
-        if (index === -1 && tipo === 'entrada') {
-            estoque.push({
-                uniforme: uniforme,
-                tamanho: tamanho,
-                quantidade: quantidade,
-                local: local || 'Almoxarifado',
-                ultimaAtualizacao: new Date().toLocaleString('pt-BR')
-            });
-        } else if (index !== -1) {
-            if (tipo === 'entrada') {
-                estoque[index].quantidade += quantidade;
-            } else {
-                estoque[index].quantidade -= quantidade;
-                if (estoque[index].quantidade < 0) estoque[index].quantidade = 0;
-            }
-            estoque[index].ultimaAtualizacao = new Date().toLocaleString('pt-BR');
-            if (local) estoque[index].local = local;
+        if(index === -1 && tipo === 'entrada') {
+            estoque.push({ uniforme, tamanho, quantidade, local: local || 'Almoxarifado', ultimaAtualizacao: new Date().toLocaleString() });
+        } else if(index !== -1) {
+            if(tipo === 'entrada') estoque[index].quantidade += quantidade;
+            else { estoque[index].quantidade -= quantidade; if(estoque[index].quantidade < 0) estoque[index].quantidade = 0; }
+            estoque[index].ultimaAtualizacao = new Date().toLocaleString();
+            if(local) estoque[index].local = local;
         }
-        
         salvarEstoqueLocal();
         atualizarTabelaEstoque();
         atualizarRelatorio();
     }
-
+    
     function verificarEstoque(uniforme, tamanho, quantidade) {
         const atual = getEstoqueAtual(uniforme, tamanho);
         document.getElementById('mov_estoque_inicial').value = atual;
-        
         const final = tipoMovimento === 'entrada' ? atual + quantidade : atual - quantidade;
         document.getElementById('mov_estoque_final').value = final >= 0 ? final : 0;
-        
-        if (tipoMovimento === 'saida' && final < 0) {
+        if(tipoMovimento === 'saida' && final < 0) {
             showToast(`⚠️ Estoque insuficiente! Disponível: ${atual}`, 'error');
             return false;
         }
         return true;
     }
-
-    // ========== EVENTOS PRINCIPAIS ==========
+    
+    async function enviarParaPlanilha(dados) {
+        if(!SCRIPT_URL) {
+            showToast('⚠️ Configure a URL do Google Sheets primeiro!', 'error');
+            return false;
+        }
+        
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+            showToast('✅ Enviado para a planilha!', 'success');
+            return true;
+        } catch(error) {
+            console.error('Erro:', error);
+            showToast('⚠️ Erro ao enviar, mas salvo localmente', 'error');
+            return false;
+        }
+    }
+    
     function setMovimento(tipo) {
         tipoMovimento = tipo;
         document.getElementById('mov_tipoMovimento').value = tipo;
-        
         const btnEntrada = document.querySelector('.radio-btn.entrada');
         const btnSaida = document.querySelector('.radio-btn.saida');
-        
-        if (tipo === 'entrada') {
-            btnEntrada.classList.add('ativo');
-            btnSaida.classList.remove('ativo');
-        } else {
-            btnSaida.classList.add('ativo');
-            btnEntrada.classList.remove('ativo');
-        }
-        
+        if(btnEntrada) btnEntrada.className = 'radio-btn entrada' + (tipo === 'entrada' ? ' ativo' : '');
+        if(btnSaida) btnSaida.className = 'radio-btn saida' + (tipo === 'saida' ? ' ativo' : '');
         const uniforme = document.getElementById('mov_uniforme').value;
         const tamanho = document.getElementById('mov_tamanho').value;
         const qtd = parseInt(document.getElementById('mov_quantidade').value);
-        
-        if (uniforme && tamanho) {
-            verificarEstoque(uniforme, tamanho, qtd);
-        }
+        if(uniforme && tamanho) verificarEstoque(uniforme, tamanho, qtd);
     }
-
+    
     async function enviarMovimentacao() {
         const uniforme = document.getElementById('mov_uniforme').value;
         const tamanho = document.getElementById('mov_tamanho').value;
@@ -573,122 +432,70 @@
         const observacao = document.getElementById('mov_observacao').value || '';
         const tipo = tipoMovimento;
         
-        if (!uniforme || !tamanho || !local || !destinatario || !data) {
+        if(!uniforme || !tamanho || !local || !destinatario || !data) {
             showToast('❌ Preencha todos os campos obrigatórios!', 'error');
             return;
         }
         
         const estoqueInicial = getEstoqueAtual(uniforme, tamanho);
         let estoqueFinal = estoqueInicial;
+        if(tipo === 'entrada') estoqueFinal = estoqueInicial + quantidade;
+        else if(quantidade > estoqueInicial) {
+            showToast(`⚠️ Estoque insuficiente! Disponível: ${estoqueInicial}`, 'error');
+            return;
+        } else estoqueFinal = estoqueInicial - quantidade;
         
-        if (tipo === 'entrada') {
-            estoqueFinal = estoqueInicial + quantidade;
-        } else {
-            if (quantidade > estoqueInicial) {
-                showToast(`⚠️ Estoque insuficiente! Disponível: ${estoqueInicial}`, 'error');
-                return;
-            }
-            estoqueFinal = estoqueInicial - quantidade;
-        }
+        const mov = { id: Date.now(), data, uniforme, tamanho, local, quantidade, destinatario, tipo, estoqueInicial, estoqueFinal, observacao };
         
-        const mov = {
-            id: Date.now(),
-            data: data,
-            uniforme: uniforme,
-            tamanho: tamanho,
-            local: local,
-            quantidade: quantidade,
-            destinatario: destinatario,
-            tipo: tipo,
-            estoqueInicial: estoqueInicial,
-            estoqueFinal: estoqueFinal,
-            observacao: observacao,
-            timestamp: new Date().toISOString()
-        };
-        
-        // Desabilitar botão
-        const btn = document.getElementById('btnSalvarMov');
-        btn.disabled = true;
-        btn.textContent = '⏳ Salvando...';
-        
-        // Salvar localmente
         movimentacoes.unshift(mov);
         salvarMovimentacoesLocal();
-        
-        // Atualizar estoque
         atualizarEstoque(uniforme, tamanho, quantidade, tipo, local);
+        await enviarParaPlanilha(mov);
         
-        // Enviar para Google Sheets
-        const enviado = await enviarParaGoogleSheets(mov);
-        
-        if (enviado) {
-            showToast('✅ Movimentação salva na planilha!', 'success');
-        } else {
-            showToast('⚠️ Salvo localmente. Verifique a conexão.', 'warning');
-        }
-        
-        // Limpar formulário
+        showToast('✅ Movimentação salva!', 'success');
         document.getElementById('mov_local').value = '';
         document.getElementById('mov_destinatario').value = '';
         document.getElementById('mov_observacao').value = '';
         document.getElementById('mov_quantidade').value = '1';
         document.getElementById('mov_estoque_inicial').value = '';
         document.getElementById('mov_estoque_final').value = '';
-        
-        // Reabilitar botão
-        btn.disabled = false;
-        btn.textContent = '💾 SALVAR MOVIMENTAÇÃO';
-        
         atualizarTabelaMovimentacoes();
     }
-
+    
     function salvarEstoqueInicial() {
         const uniforme = document.getElementById('est_uniforme').value;
         const tamanho = document.getElementById('est_tamanho').value;
         const quantidade = parseInt(document.getElementById('est_quantidade').value);
         const local = document.getElementById('est_local').value || 'Almoxarifado';
-        
-        if (!uniforme || !tamanho) {
-            showToast('❌ Selecione uniforme e tamanho!', 'error');
-            return;
-        }
+        if(!uniforme || !tamanho) { showToast('❌ Selecione uniforme e tamanho!', 'error'); return; }
         
         const index = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
-        
-        if (index !== -1) {
+        if(index !== -1) {
             estoque[index].quantidade = quantidade;
             estoque[index].local = local;
-            estoque[index].ultimaAtualizacao = new Date().toLocaleString('pt-BR');
+            estoque[index].ultimaAtualizacao = new Date().toLocaleString();
         } else {
-            estoque.push({
-                uniforme: uniforme,
-                tamanho: tamanho,
-                quantidade: quantidade,
-                local: local,
-                ultimaAtualizacao: new Date().toLocaleString('pt-BR')
-            });
+            estoque.push({ uniforme, tamanho, quantidade, local, ultimaAtualizacao: new Date().toLocaleString() });
         }
-        
         salvarEstoqueLocal();
         atualizarTabelaEstoque();
         atualizarRelatorio();
-        showToast('✅ Estoque salvo com sucesso!', 'success');
+        showToast('✅ Estoque salvo!', 'success');
     }
-
+    
     function editarEstoque(uniforme, tamanho) {
         const item = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
-        if (item) {
+        if(item) {
             document.getElementById('est_uniforme').value = uniforme;
             document.getElementById('est_tamanho').value = tamanho;
             document.getElementById('est_quantidade').value = item.quantidade;
             document.getElementById('est_local').value = item.local || '';
             mudarPagina('estoque', document.querySelector('.nav-tab:nth-child(2)'));
-            showToast('✅ Produto carregado para edição!', 'success');
         }
     }
-
+    
     function excluirEstoque(uniforme, tamanho) {
-        if (confirm(`⚠️ Tem certeza que deseja remover ${uniforme} - ${tamanho} do estoque?`)) {
+        if(confirm(`Remover ${uniforme} - ${tamanho}?`)) {
             estoque = estoque.filter(e => !(e.uniforme === uniforme && e.tamanho === tamanho));
             salvarEstoqueLocal();
             atualizarTabelaEstoque();
@@ -696,143 +503,65 @@
             showToast('✅ Produto removido!', 'success');
         }
     }
-
-    // ========== ATUALIZAÇÃO DAS TABELAS ==========
+    
     function atualizarTabelaEstoque() {
         const tbody = document.getElementById('estoqueBody');
-        const totalItens = estoque.reduce((sum, item) => sum + item.quantidade, 0);
-        
+        const totalItens = estoque.reduce((sum, i) => sum + i.quantidade, 0);
         document.getElementById('totalItens').textContent = totalItens;
         document.getElementById('totalTipos').textContent = estoque.length;
-        
-        if (estoque.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = estoque.map(item => `
-            <tr>
-                <td>${item.uniforme}</td>
-                <td>${item.tamanho}</td>
-                <td><strong>${item.quantidade}</strong></td>
-                <td>${item.local || '-'}</td>
-                <td>${item.ultimaAtualizacao || '-'}</td>
-                <td>
-                    <button onclick="editarEstoque('${item.uniforme}', '${item.tamanho}')" 
-                        style="padding:4px 8px;background:#667eea;color:white;border:none;border-radius:4px;cursor:pointer;margin-right:5px">
-                        ✏️
-                    </button>
-                    <button onclick="excluirEstoque('${item.uniforme}', '${item.tamanho}')" 
-                        style="padding:4px 8px;background:#f44336;color:white;border:none;border-radius:4px;cursor:pointer">
-                        🗑️
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        if(estoque.length === 0) { tbody.innerHTML = '<tr><td colspan="5">Nenhum produto</td></tr>'; return; }
+        tbody.innerHTML = estoque.map(i => `<tr><td>${i.uniforme}</td><td>${i.tamanho}</td><td><strong>${i.quantidade}</strong></td><td>${i.local || '-'}</td><td><button onclick="editarEstoque('${i.uniforme}', '${i.tamanho}')" style="padding:4px 8px;background:#667eea;color:white;border:none;border-radius:4px;margin-right:5px">✏️</button><button onclick="excluirEstoque('${i.uniforme}', '${i.tamanho}')" style="padding:4px 8px;background:#f44336;color:white;border:none;border-radius:4px">🗑️</button></td></tr>`).join('');
     }
-
+    
     function atualizarTabelaMovimentacoes() {
         const tbody = document.getElementById('movimentacoesBody');
-        
-        if (movimentacoes.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center">Nenhuma movimentação</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = movimentacoes.slice(0, 50).map(m => `
-            <tr>
-                <td>${m.data}</td>
-                <td>${m.uniforme}</td>
-                <td>${m.tamanho}</td>
-                <td>${m.local}</td>
-                <td>${m.quantidade}</td>
-                <td>${m.destinatario}</td>
-                <td><span class="badge ${m.tipo}">${m.tipo === 'entrada' ? '📥 ENTRADA' : '📤 SAÍDA'}</span></td>
-                <td>${m.estoqueInicial}</td>
-                <td>${m.estoqueFinal}</td>
-            </tr>
-        `).join('');
+        if(movimentacoes.length === 0) { tbody.innerHTML = '<tr><td colspan="9">Nenhuma movimentação</td></tr>'; return; }
+        tbody.innerHTML = movimentacoes.slice(0, 50).map(m => `<tr><td>${m.data}</td><td>${m.uniforme}</td><td>${m.tamanho}</td><td>${m.local}</td><td>${m.quantidade}</td><td>${m.destinatario}</td><td><span class="badge ${m.tipo}">${m.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA'}</span></td><td>${m.estoqueInicial}</td><td>${m.estoqueFinal}</td></tr>`).join('');
     }
-
+    
     function atualizarRelatorio() {
         const tbody = document.getElementById('relatorioBody');
-        
         const relatorio = estoque.map(item => {
-            const entradas = movimentacoes
-                .filter(m => m.uniforme === item.uniforme && m.tamanho === item.tamanho && m.tipo === 'entrada')
-                .reduce((sum, m) => sum + m.quantidade, 0);
-            const saidas = movimentacoes
-                .filter(m => m.uniforme === item.uniforme && m.tamanho === item.tamanho && m.tipo === 'saida')
-                .reduce((sum, m) => sum + m.quantidade, 0);
-            
-            return {
-                uniforme: item.uniforme,
-                tamanho: item.tamanho,
-                estoque: item.quantidade,
-                entradas: entradas,
-                saidas: saidas
-            };
+            const entradas = movimentacoes.filter(m => m.uniforme === item.uniforme && m.tamanho === item.tamanho && m.tipo === 'entrada').reduce((s, m) => s + m.quantidade, 0);
+            const saidas = movimentacoes.filter(m => m.uniforme === item.uniforme && m.tamanho === item.tamanho && m.tipo === 'saida').reduce((s, m) => s + m.quantidade, 0);
+            return { uniforme: item.uniforme, tamanho: item.tamanho, estoque: item.quantidade, entradas, saidas };
         });
-        
-        if (relatorio.length === 0) {
-            tbody.innerHTML = '<td><td colspan="6" style="text-align:center">Nenhum dado disponível</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = relatorio.map(r => `
-            <tr>
-                <td>${r.uniforme}</td>
-                <td>${r.tamanho}</td>
-                <td><strong>${r.estoque}</strong></td>
-                <td>${r.entradas}</td>
-                <td>${r.saidas}</td>
-                <td>${r.estoque}</td>
-            </tr>
-        `).join('');
+        if(relatorio.length === 0) { tbody.innerHTML = '<td><td colspan="6">Nenhum dado</td></tr>'; return; }
+        tbody.innerHTML = relatorio.map(r => `<tr><td>${r.uniforme}</td><td>${r.tamanho}</td><td><strong>${r.estoque}</strong></td><td>${r.entradas}</td><td>${r.saidas}</td><td>${r.estoque}</td></tr>`).join('');
     }
-
-    // ========== NAVEGAÇÃO ==========
+    
     function mudarPagina(pagina, elemento) {
         document.querySelectorAll('.pagina').forEach(p => p.classList.remove('ativa'));
         document.getElementById(`pagina${pagina.charAt(0).toUpperCase() + pagina.slice(1)}`).classList.add('ativa');
-        
         document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('ativo'));
-        if (elemento) elemento.classList.add('ativo');
-        
-        if (pagina === 'relatorios') {
-            atualizarRelatorio();
-        }
+        if(elemento) elemento.classList.add('ativo');
     }
-
-    // ========== EVENT LISTENERS ==========
-    document.getElementById('mov_uniforme').addEventListener('change', () => {
+    
+    // Event listeners
+    document.getElementById('mov_uniforme')?.addEventListener('change', () => {
         const u = document.getElementById('mov_uniforme').value;
         const t = document.getElementById('mov_tamanho').value;
         const q = parseInt(document.getElementById('mov_quantidade').value);
-        if (u && t) verificarEstoque(u, t, q);
+        if(u && t) verificarEstoque(u, t, q);
+    });
+    document.getElementById('mov_tamanho')?.addEventListener('change', () => {
+        const u = document.getElementById('mov_uniforme').value;
+        const t = document.getElementById('mov_tamanho').value;
+        const q = parseInt(document.getElementById('mov_quantidade').value);
+        if(u && t) verificarEstoque(u, t, q);
+    });
+    document.getElementById('mov_quantidade')?.addEventListener('input', () => {
+        const u = document.getElementById('mov_uniforme').value;
+        const t = document.getElementById('mov_tamanho').value;
+        const q = parseInt(document.getElementById('mov_quantidade').value);
+        if(u && t) verificarEstoque(u, t, q);
     });
     
-    document.getElementById('mov_tamanho').addEventListener('change', () => {
-        const u = document.getElementById('mov_uniforme').value;
-        const t = document.getElementById('mov_tamanho').value;
-        const q = parseInt(document.getElementById('mov_quantidade').value);
-        if (u && t) verificarEstoque(u, t, q);
-    });
-    
-    document.getElementById('mov_quantidade').addEventListener('input', () => {
-        const u = document.getElementById('mov_uniforme').value;
-        const t = document.getElementById('mov_tamanho').value;
-        const q = parseInt(document.getElementById('mov_quantidade').value);
-        if (u && t) verificarEstoque(u, t, q);
-    });
-
-    // ========== INICIALIZAÇÃO ==========
+    // Inicialização
     document.getElementById('mov_data').valueAsDate = new Date();
+    document.getElementById('inputUrl').value = SCRIPT_URL;
+    if(SCRIPT_URL) document.getElementById('urlStatus').className = 'url-status ok';
     carregarDados();
-    
-    // Testar conexão com o Google Sheets
-    console.log('URL do Google Sheets configurada:', SCRIPT_URL);
-    showToast('✅ Sistema pronto! Dados serão salvos na planilha.', 'success');
 </script>
 </body>
 </html>
