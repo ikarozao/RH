@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Uniformes - Opção Telecom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header h2 {
+            font-size: 1.2em;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .form-container h3 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .status.online {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+
+        .status.offline {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #f44336;
+        }
+
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: #4caf50;
+        }
+
+        .toast.error {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎽 CONTROLE DE UNIFORMES</h1>
+            <h2>Opção Telecom</h2>
+        </header>
+
+        <div class="form-container">
+            <h3>📝 Registrar Movimentação</h3>
+            
+            <form id="uniformForm">
+                <div class="form-group">
+                    <label for="uniformeTipo">Tipo de Uniforme *</label>
+                    <select id="uniformeTipo" required>
+                        <option value="">Selecione...</option>
+                        <option value="Camiseta Manga Curta">Camiseta Manga Curta</option>
+                        <option value="Camiseta Manga Longa">Camiseta Manga Longa</option>
+                        <option value="Calça">Calça</option>
+                        <option value="Jaqueta">Jaqueta</option>
+                        <option value="Bermuda">Bermuda</option>
+                        <option value="Touca">Touca</option>
+                        <option value="Luvas">Luvas</option>
+                        <option value="Colete">Colete</option>
+                        <option value="Capacete">Capacete</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tamanho">Tamanho *</label>
+                    <select id="tamanho" required>
+                        <option value="">Selecione...</option>
+                        <option value="PP">PP</option>
+                        <option value="P">P</option>
+                        <option value="P Feminino">P Feminino</option>
+                        <option value="M">M</option>
+                        <option value="M Feminino">M Feminino</option>
+                        <option value="G">G</option>
+                        <option value="G Feminino">G Feminino</option>
+                        <option value="GG">GG</option>
+                        <option value="GG Feminino">GG Feminino</option>
+                        <option value="XGG">XGG</option>
+                        <option value="Único">Único</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="local">Local/Setor *</label>
+                    <input type="text" id="local" placeholder="Ex: Almoxarifado, Obra RJ" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantidade">Quantidade *</label>
+                    <input type="number" id="quantidade" min="1" value="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="destinatario">Destinatário *</label>
+                    <input type="text" id="destinatario" placeholder="Nome do colaborador" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="data">Data *</label>
+                    <input type="date" id="data" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipoMovimento">Tipo de Movimento *</label>
+                    <select id="tipoMovimento" required>
+                        <option value="entrada">📥 Entrada (Recebimento)</option>
+                        <option value="saida">📤 Saída (Retirada)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="observacao">Observação</label>
+                    <textarea id="observacao" rows="2" placeholder="Informações adicionais..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnSalvar">💾 SALVAR REGISTRO</button>
+            </form>
+
+            <div id="statusConexao" class="status">🔄 Verificando conexão...</div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // ⚠️ COLE SUA URL DO GOOGLE APPS SCRIPT AQUI ⚠️
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_G63vWBGuWmdakyLALC7aFZIMUtbXTeSP2HIIP5ewoESToypUqLMykLTLgIE0GQxAQw/exec';
+
+        // Função para mostrar mensagem
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, 3000);
+        }
+
+        // Função para salvar no Google Sheets
+        async function salvarNoGoogleSheets(dados) {
+            try {
+                console.log('Enviando dados:', dados);
+                
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                console.log('Status da resposta:', response.status);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const resultado = await response.json();
+                console.log('Resultado:', resultado);
+
+                if (resultado.success) {
+                    showToast('✅ Registro salvo no Google Sheets!', 'success');
+                    return true;
+                } else {
+                    throw new Error(resultado.error);
+                }
+
+            } catch (error) {
+                console.error('Erro:', error);
+                showToast(`❌ Erro: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        // Verificar conexão
+        async function verificarConexao() {
+            const statusDiv = document.getElementById('statusConexao');
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    statusDiv.innerHTML = '✅ Conectado ao Google Sheets - Pronto para salvar!';
+                    statusDiv.className = 'status online';
+                } else {
+                    throw new Error('Falha na conexão');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '⚠️ Google Sheets offline - Verifique a URL do script';
+                statusDiv.className = 'status offline';
+                console.error('Erro de conexão:', error);
+            }
+        }
+
+        // Configurar o formulário
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('uniformForm');
+            const btn = document.getElementById('btnSalvar');
+            
+            // Data atual
+            document.getElementById('data').valueAsDate = new Date();
+            
+            // Verificar conexão
+            verificarConexao();
+            
+            // Evento do formulário
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Coletar dados
+                const dados = {
+                    data: document.getElementById('data').value,
+                    uniforme_tipo: document.getElementById('uniformeTipo').value,
+                    tamanho: document.getElementById('tamanho').value,
+                    local: document.getElementById('local').value,
+                    quantidade: parseInt(document.getElementById('quantidade').value),
+                    destinatario: document.getElementById('destinatario').value,
+                    tipo_movimento: document.getElementById('tipoMovimento').value,
+                    observacao: document.getElementById('observacao').value || ''
+                };
+                
+                // Validar
+                if (!dados.uniforme_tipo || !dados.tamanho || !dados.local || !dados.destinatario || !dados.data) {
+                    showToast('❌ Preencha todos os campos obrigatórios', 'error');
+                    return;
+                }
+                
+                // Desabilitar botão
+                btn.disabled = true;
+                btn.textContent = '💾 Salvando...';
+                
+                // Salvar
+                const sucesso = await salvarNoGoogleSheets(dados);
+                
+                if (sucesso) {
+                    // Limpar formulário
+                    form.reset();
+                    document.getElementById('data').valueAsDate = new Date();
+                    document.getElementById('quantidade').value = '1';
+                    document.getElementById('tipoMovimento').value = 'entrada';
+                }
+                
+                // Reabilitar botão
+                btn.disabled = false;
+                btn.textContent = '💾 SALVAR REGISTRO';
+            });
+        });
+    </script>
+</body>
+</html>
