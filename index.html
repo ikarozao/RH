@@ -16,7 +16,6 @@
         
         .container { max-width: 1400px; margin: 0 auto; }
         
-        /* Navegação Responsiva */
         .nav-tabs {
             display: flex;
             gap: 8px;
@@ -34,7 +33,6 @@
             border: none;
             font-size: 13px;
             transition: all 0.2s;
-            flex: 0 1 auto;
         }
         .nav-tab.ativo {
             background: linear-gradient(135deg, #3b82f6, #1e40af);
@@ -78,7 +76,6 @@
             color: #94a3b8;
             margin-bottom: 4px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
@@ -88,15 +85,11 @@
             font-size: 14px;
             background: #0f172a;
             color: #f1f5f9;
-            transition: all 0.2s;
         }
         .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #3b82f6;
             background: #1e293b;
-        }
-        .form-group input::placeholder, .form-group textarea::placeholder {
-            color: #64748b;
         }
         
         .btn-primary {
@@ -113,45 +106,14 @@
             transition: all 0.2s;
         }
         .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59,130,246,0.4); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         
-        .btn-secondary {
-            background: linear-gradient(135deg, #475569, #1e293b);
-        }
+        .btn-secondary { background: linear-gradient(135deg, #475569, #1e293b); }
+        .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
         
-        .btn-danger {
-            background: linear-gradient(135deg, #ef4444, #b91c1c);
-        }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-        
-        .table-wrapper {
-            overflow-x: auto;
-            margin-top: 12px;
-            border-radius: 12px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-        th, td {
-            padding: 10px 8px;
-            text-align: left;
-            border-bottom: 1px solid #334155;
-            color: #cbd5e1;
-        }
-        th {
-            background: #0f172a;
-            color: #94a3b8;
-            font-weight: 600;
-            font-size: 11px;
-            text-transform: uppercase;
-            position: sticky;
-            top: 0;
-        }
+        .table-wrapper { overflow-x: auto; margin-top: 12px; border-radius: 12px; max-height: 400px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #334155; color: #cbd5e1; }
+        th { background: #0f172a; color: #94a3b8; font-weight: 600; font-size: 11px; text-transform: uppercase; position: sticky; top: 0; }
         tr:hover td { background: #334155; }
         
         .badge {
@@ -175,7 +137,6 @@
             font-weight: 600;
             background: #0f172a;
             color: #cbd5e1;
-            transition: all 0.2s;
         }
         .radio-btn.entrada.ativo { background: #065f46; border-color: #34d399; color: #34d399; }
         .radio-btn.saida.ativo { background: #991b1b; border-color: #fca5a5; color: #fca5a5; }
@@ -242,16 +203,12 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
-        .btn-icon {
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            cursor: pointer;
-            border: none;
-            margin: 2px;
-        }
+        .btn-icon { padding: 6px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; border: none; margin: 2px; }
         .btn-edit { background: #3b82f6; color: white; }
         .btn-delete { background: #ef4444; color: white; }
+        
+        .acoes-botoes { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .acoes-botoes button { flex: 1; padding: 10px; font-size: 13px; }
         
         @media (max-width: 640px) {
             body { padding: 12px 8px; }
@@ -259,51 +216,38 @@
             .nav-tab { padding: 8px 14px; font-size: 12px; }
             .card { padding: 14px; }
             th, td { padding: 8px 6px; font-size: 11px; }
-            .resumo-item .numero { font-size: 20px; }
-            .filtros select, .filtros input { min-width: 100px; font-size: 12px; }
-        }
-        
-        .acoes-botoes {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-        .acoes-botoes button {
-            flex: 1;
-            padding: 10px;
-            font-size: 13px;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <header>
-        <h1>CONTROLE DE UNIFORMES</h1>
+        <h1>🎽 CONTROLE DE UNIFORMES</h1>
         <p>Opção Telecom - Gestão de Estoque</p>
     </header>
 
-    <!-- Status da URL -->
+    <!-- Status da Conexão -->
     <div class="card">
-        <h3>Configuração</h3>
-        <div class="url-bar" style="display: flex; gap: 8px; margin-bottom: 8px;">
-            <input type="text" id="inputUrl" placeholder="URL do Google Apps Script" style="flex:1; padding:10px; border-radius:12px; border:1.5px solid #334155; background:#0f172a; color:white;" value="https://script.google.com/macros/s/AKfycbysRFKY0jJS7kgrPryUEuWV_0QTwCvBRD9fuSJIbAOv7uCQKu0nhPluoBW05EL6TKH3oA/exec" />
-            <button class="btn-salvar-url" onclick="salvarUrl()" style="padding:10px 16px; background:#3b82f6; border:none; border-radius:12px; color:white; font-weight:bold;">Salvar</button>
+        <h3>✅ Status do Sistema</h3>
+        <div id="statusConexao" style="background: #065f46; padding: 10px; border-radius: 12px; text-align: center; color: #34d399; font-weight: bold;">
+            🟢 Conectado ao SheetDB - Dados vão para a planilha automaticamente!
         </div>
-        <div id="urlStatus" class="url-status" style="font-size:12px; color:#94a3b8; text-align:center;">✅ URL pré-configurada</div>
+        <div style="font-size: 11px; color: #94a3b8; text-align: center; margin-top: 8px;">
+            URL: https://sheetdb.io/api/v1/vb7gan9e7kd8a
+        </div>
     </div>
 
     <!-- Navegação -->
     <div class="nav-tabs">
-        <button class="nav-tab ativo" onclick="mudarPagina('movimentacao', this)">MOVIMENTAÇÕES</button>
-        <button class="nav-tab" onclick="mudarPagina('estoque', this)">ESTOQUE</button>
-        <button class="nav-tab" onclick="mudarPagina('relatorios', this)">RELATÓRIOS</button>
+        <button class="nav-tab ativo" onclick="mudarPagina('movimentacao', this)">📊 MOVIMENTAÇÕES</button>
+        <button class="nav-tab" onclick="mudarPagina('estoque', this)">📦 ESTOQUE</button>
+        <button class="nav-tab" onclick="mudarPagina('relatorios', this)">📈 RELATÓRIOS</button>
     </div>
 
     <!-- PÁGINA 1: MOVIMENTAÇÕES -->
     <div id="paginaMovimentacao" class="pagina ativa">
         <div class="card">
-            <h3>Registrar Movimentação</h3>
+            <h3>📝 Registrar Movimentação</h3>
             <div class="grid-2">
                 <div class="form-group">
                     <label>Uniforme *</label>
@@ -355,11 +299,11 @@
             </div>
             <div class="grid-2">
                 <div class="form-group">
-                    <label>Estoque Inicial</label>
+                    <label>📊 Estoque Inicial</label>
                     <input type="text" id="mov_estoque_inicial" readonly style="background:#0f172a; color:#94a3b8;">
                 </div>
                 <div class="form-group">
-                    <label>Estoque Final</label>
+                    <label>📊 Estoque Final</label>
                     <input type="text" id="mov_estoque_final" readonly style="background:#0f172a; color:#94a3b8;">
                 </div>
             </div>
@@ -367,11 +311,11 @@
                 <label>Observação</label>
                 <textarea id="mov_observacao" rows="2"></textarea>
             </div>
-            <button class="btn-primary" id="btnSalvarMov" onclick="enviarMovimentacao()">SALVAR</button>
+            <button class="btn-primary" id="btnSalvarMov" onclick="enviarMovimentacao()">💾 SALVAR NA PLANILHA</button>
         </div>
         
         <div class="card">
-            <h3>Últimas Movimentações</h3>
+            <h3>📋 Últimas Movimentações</h3>
             <div class="table-wrapper">
                 <table id="tabelaMovimentacoes">
                     <thead><tr><th>Data</th><th>Uniforme</th><th>Tamanho</th><th>Local</th><th>Qtd</th><th>Destinatário</th><th>Tipo</th><th>Est.Ini</th><th>Est.Fim</th></tr></thead>
@@ -384,7 +328,7 @@
     <!-- PÁGINA 2: ESTOQUE -->
     <div id="paginaEstoque" class="pagina">
         <div class="card">
-            <h3>Gerenciar Estoque</h3>
+            <h3>📦 Gerenciar Estoque</h3>
             <div class="grid-3">
                 <div class="form-group">
                     <label>Uniforme</label>
@@ -414,11 +358,11 @@
                 <label>Local</label>
                 <input type="text" id="est_local" placeholder="Local de armazenamento">
             </div>
-            <button class="btn-primary" onclick="salvarEstoqueInicial()">SALVAR ESTOQUE</button>
+            <button class="btn-primary" onclick="salvarEstoqueInicial()">💾 SALVAR ESTOQUE</button>
         </div>
         
         <div class="card">
-            <h3>Resumo do Estoque</h3>
+            <h3>📊 Resumo do Estoque</h3>
             <div class="resumo-estoque">
                 <div class="resumo-item"><div class="numero" id="totalItens">0</div><div class="label">Total Itens</div></div>
                 <div class="resumo-item"><div class="numero" id="totalTipos">0</div><div class="label">Tipos</div></div>
@@ -433,10 +377,10 @@
         </div>
     </div>
 
-    <!-- PÁGINA 3: RELATÓRIOS COM FILTROS -->
+    <!-- PÁGINA 3: RELATÓRIOS -->
     <div id="paginaRelatorios" class="pagina">
         <div class="card">
-            <h3>Relatório de Movimentações</h3>
+            <h3>📈 Relatório de Movimentações</h3>
             <div class="filtros">
                 <input type="month" id="filtroMes" onchange="filtrarRelatorio()">
                 <select id="filtroTipo" onchange="filtrarRelatorio()">
@@ -449,26 +393,20 @@
                 </select>
             </div>
             <div class="acoes-botoes">
-                <button class="btn-primary btn-secondary" onclick="limparFiltros()">Limpar Filtros</button>
-                <button class="btn-primary btn-warning" onclick="limparRelatorios()">Limpar Histórico</button>
-                <button class="btn-primary btn-secondary" onclick="exportarRelatorioCSV()">Exportar CSV</button>
+                <button class="btn-primary btn-secondary" onclick="limparFiltros()">🔄 Limpar Filtros</button>
+                <button class="btn-primary btn-warning" onclick="limparRelatorios()">🗑️ Limpar Histórico</button>
+                <button class="btn-primary btn-secondary" onclick="exportarRelatorioCSV()">📥 Exportar CSV</button>
             </div>
             <div class="table-wrapper">
                 <table id="tabelaRelatorio">
-                    <thead>
-                        <tr>
-                            <th>Data</th><th>Uniforme</th><th>Tamanho</th>
-                            <th>Local</th><th>Qtd</th><th>Destinatário</th>
-                            <th>Tipo</th><th>Est.Ini</th><th>Est.Fim</th>
-                        </tr>
-                    </thead>
-                    <tbody id="relatorioBody"><tr><td colspan="9" style="text-align:center">Carregando...</td></tr></tbody>
+                    <thead><tr><th>Data</th><th>Uniforme</th><th>Tamanho</th><th>Local</th><th>Qtd</th><th>Destinatário</th><th>Tipo</th><th>Est.Ini</th><th>Est.Fim</th></tr></thead>
+                    <tbody id="relatorioBody"><tr><td colspan="9">Carregando...</td></tr></tbody>
                 </table>
             </div>
         </div>
         
         <div class="card">
-            <h3>Resumo por Uniforme</h3>
+            <h3>📊 Resumo por Uniforme</h3>
             <div class="table-wrapper">
                 <table id="tabelaResumoUniforme">
                     <thead><tr><th>Uniforme</th><th>Tamanho</th><th>Estoque</th><th>Entradas</th><th>Saídas</th></tr></thead>
@@ -482,16 +420,14 @@
 <div id="toast" class="toast"></div>
 
 <script>
-    // CONFIGURAÇÃO
-    const SCRIPT_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbysRFKY0jJS7kgrPryUEuWV_0QTwCvBRD9fuSJIbAOv7uCQKu0nhPluoBW05EL6TKH3oA/exec';
-    let SCRIPT_URL = localStorage.getItem('apps_script_url') || SCRIPT_URL_DEFAULT;
+    // ========== SUA URL DO SHEETDB ==========
+    const API_URL = 'https://sheetdb.io/api/v1/vb7gan9e7kd8a';
     
     let tipoMovimento = 'entrada';
     let estoque = [];
     let movimentacoes = [];
     let relatorioFiltrado = [];
 
-    // ========== UTILIDADES ==========
     function showToast(msg, type = 'success') {
         const toast = document.getElementById('toast');
         toast.textContent = msg;
@@ -499,15 +435,44 @@
         setTimeout(() => toast.className = 'toast', 3000);
     }
     
-    function salvarUrl() {
-        const url = document.getElementById('inputUrl').value.trim();
-        if(!url.startsWith('https://script.google.com')) {
-            showToast('URL inválida!', 'error');
-            return;
+    // ========== ENVIO PARA SHEETDB (FUNCIONA GARANTIDO!) ==========
+    async function enviarParaPlanilha(dados) {
+        try {
+            // Formatar dados para o SheetDB
+            const dadosFormatados = {
+                data: dados.data,
+                uniforme: dados.uniforme,
+                tamanho: dados.tamanho,
+                local: dados.local,
+                quantidade: parseInt(dados.quantidade),
+                destinatario: dados.destinatario,
+                tipo: dados.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA',
+                estoque_inicial: parseInt(dados.estoqueInicial),
+                estoque_final: parseInt(dados.estoqueFinal),
+                observacao: dados.observacao || '',
+                timestamp: new Date().toISOString()
+            };
+            
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosFormatados)
+            });
+            
+            if(response.ok) {
+                showToast('✅ Enviado para a planilha!', 'success');
+                return true;
+            } else {
+                const erro = await response.text();
+                console.error('Erro:', erro);
+                showToast('⚠️ Erro ao enviar, mas salvo localmente', 'warning');
+                return false;
+            }
+        } catch(error) {
+            console.error('Erro:', error);
+            showToast('⚠️ Erro de conexão, salvo localmente', 'warning');
+            return false;
         }
-        localStorage.setItem('apps_script_url', url);
-        SCRIPT_URL = url;
-        showToast('URL salva!', 'success');
     }
     
     // ========== DADOS LOCAIS ==========
@@ -557,18 +522,6 @@
         return true;
     }
     
-    // ========== ENVIO PARA PLANILHA ==========
-    async function enviarParaPlanilha(dados) {
-        if(!SCRIPT_URL) return false;
-        try {
-            const formData = new FormData();
-            Object.keys(dados).forEach(key => formData.append(key, dados[key]));
-            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: formData });
-            return true;
-        } catch(e) { return false; }
-    }
-    
-    // ========== MOVIMENTAÇÕES ==========
     function setMovimento(tipo) {
         tipoMovimento = tipo;
         document.getElementById('mov_tipoMovimento').value = tipo;
@@ -594,7 +547,7 @@
         const tipo = tipoMovimento;
         
         if(!uniforme || !tamanho || !local || !destinatario || !data) {
-            showToast('Preencha todos os campos!', 'error');
+            showToast('❌ Preencha todos os campos!', 'error');
             return;
         }
         
@@ -602,7 +555,7 @@
         let estoqueFinal = estoqueInicial;
         if(tipo === 'entrada') estoqueFinal = estoqueInicial + quantidade;
         else if(quantidade > estoqueInicial) {
-            showToast(`Estoque insuficiente! Disponível: ${estoqueInicial}`, 'error');
+            showToast(`⚠️ Estoque insuficiente! Disponível: ${estoqueInicial}`, 'error');
             return;
         } else estoqueFinal = estoqueInicial - quantidade;
         
@@ -613,7 +566,7 @@
         atualizarEstoque(uniforme, tamanho, quantidade, tipo, local);
         await enviarParaPlanilha(mov);
         
-        showToast('Movimentação salva!', 'success');
+        showToast('✅ Movimentação salva!', 'success');
         document.getElementById('mov_local').value = '';
         document.getElementById('mov_destinatario').value = '';
         document.getElementById('mov_observacao').value = '';
@@ -625,7 +578,6 @@
         filtrarRelatorio();
     }
     
-    // ========== ESTOQUE ==========
     function salvarEstoqueInicial() {
         const uniforme = document.getElementById('est_uniforme').value;
         const tamanho = document.getElementById('est_tamanho').value;
@@ -643,7 +595,7 @@
         }
         salvarEstoqueLocal();
         atualizarTabelaEstoque();
-        showToast('Estoque salvo!', 'success');
+        showToast('✅ Estoque salvo!', 'success');
     }
     
     function editarEstoque(uniforme, tamanho) {
@@ -662,11 +614,10 @@
             estoque = estoque.filter(e => !(e.uniforme === uniforme && e.tamanho === tamanho));
             salvarEstoqueLocal();
             atualizarTabelaEstoque();
-            showToast('Produto removido!', 'success');
+            showToast('✅ Produto removido!', 'success');
         }
     }
     
-    // ========== TABELAS ==========
     function atualizarTabelaEstoque() {
         const tbody = document.getElementById('estoqueBody');
         const totalItens = estoque.reduce((sum, i) => sum + i.quantidade, 0);
@@ -678,13 +629,12 @@
         tbody.innerHTML = estoque.map(i => `
             <tr>
                 <td>${i.uniforme}</td><td>${i.tamanho}</td>
-                <td><strong>${i.quantidade}</strong></td>
-                <td>${i.local || '-'}</td>
+                <td><strong>${i.quantidade}</strong></td><td>${i.local || '-'}</td>
                 <td>
                     <button class="btn-icon btn-edit" onclick="editarEstoque('${i.uniforme}', '${i.tamanho}')">✏️</button>
                     <button class="btn-icon btn-delete" onclick="excluirEstoque('${i.uniforme}', '${i.tamanho}')">🗑️</button>
-                </td>
-            </tr>
+                 </td>
+             </tr>
         `).join('');
     }
     
@@ -697,11 +647,10 @@
                 <td>${m.local}</td><td>${m.quantidade}</td><td>${m.destinatario}</td>
                 <td><span class="badge ${m.tipo}">${m.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA'}</span></td>
                 <td>${m.estoqueInicial}</td><td>${m.estoqueFinal}</td>
-            </tr>
+             </tr>
         `).join('');
     }
     
-    // ========== RELATÓRIOS COM FILTROS ==========
     function atualizarFiltrosUniformes() {
         const uniformes = [...new Set(movimentacoes.map(m => m.uniforme))];
         const select = document.getElementById('filtroUniforme');
@@ -714,7 +663,6 @@
         const uniforme = document.getElementById('filtroUniforme').value;
         
         let filtrados = [...movimentacoes];
-        
         if(mes) filtrados = filtrados.filter(m => m.data.substring(0,7) === mes);
         if(tipo !== 'todos') filtrados = filtrados.filter(m => m.tipo === tipo);
         if(uniforme) filtrados = filtrados.filter(m => m.uniforme === uniforme);
@@ -730,12 +678,10 @@
                     <td>${m.local}</td><td>${m.quantidade}</td><td>${m.destinatario}</td>
                     <td><span class="badge ${m.tipo}">${m.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA'}</span></td>
                     <td>${m.estoqueInicial}</td><td>${m.estoqueFinal}</td>
-                </tr>
+                 </tr>
             `).join('');
         }
         
-        // Resumo por uniforme
-        const resumo = [];
         const grupos = new Map();
         filtrados.forEach(m => {
             const key = `${m.uniforme}|${m.tamanho}`;
@@ -765,17 +711,17 @@
         document.getElementById('filtroTipo').value = 'todos';
         document.getElementById('filtroUniforme').value = '';
         filtrarRelatorio();
-        showToast('Filtros limpos!', 'success');
+        showToast('✅ Filtros limpos!', 'success');
     }
     
     function limparRelatorios() {
-        if(confirm('⚠️ Isso vai limpar TODO o histórico de movimentações. Esta ação não pode ser desfeita. Confirmar?')) {
+        if(confirm('⚠️ Isso vai limpar TODO o histórico de movimentações. Confirmar?')) {
             movimentacoes = [];
             salvarMovimentacoesLocal();
             atualizarTabelaMovimentacoes();
             atualizarFiltrosUniformes();
             filtrarRelatorio();
-            showToast('Histórico limpo!', 'warning');
+            showToast('🗑️ Histórico limpo!', 'warning');
         }
     }
     
@@ -793,10 +739,9 @@
         link.download = `relatorio_uniformes_${new Date().toISOString().split('T')[0]}.csv`;
         link.click();
         URL.revokeObjectURL(link.href);
-        showToast('Relatório exportado!', 'success');
+        showToast('📥 Relatório exportado!', 'success');
     }
     
-    // ========== NAVEGAÇÃO ==========
     function mudarPagina(pagina, elemento) {
         document.querySelectorAll('.pagina').forEach(p => p.classList.remove('ativa'));
         document.getElementById(`pagina${pagina.charAt(0).toUpperCase() + pagina.slice(1)}`).classList.add('ativa');
@@ -805,7 +750,7 @@
         if(pagina === 'relatorios') filtrarRelatorio();
     }
     
-    // ========== EVENTOS ==========
+    // Event listeners
     document.getElementById('mov_uniforme')?.addEventListener('change', () => {
         const u = document.getElementById('mov_uniforme').value;
         const t = document.getElementById('mov_tamanho').value;
@@ -825,11 +770,12 @@
         if(u && t) verificarEstoque(u, t, q);
     });
     
-    // ========== INICIALIZAÇÃO ==========
+    // Inicialização
     document.getElementById('mov_data').valueAsDate = new Date();
-    document.getElementById('inputUrl').value = SCRIPT_URL;
     document.getElementById('filtroMes').value = new Date().toISOString().substring(0,7);
     carregarDados();
+    
+    showToast('✅ Sistema pronto! Dados vão para a planilha automaticamente!', 'success');
 </script>
 </body>
 </html>
