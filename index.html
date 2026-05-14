@@ -156,6 +156,64 @@
         .toast.error {
             background-color: #f44336;
         }
+        
+        .registros-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        
+        .registros-container h3 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        
+        th {
+            background: #f8f9fa;
+            color: #555;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .badge.entrada {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .badge.saida {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .btn-exportar {
+            background: linear-gradient(135deg, #34a853 0%, #1e8e3e 100%);
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -239,17 +297,39 @@
                 <button type="submit" class="btn-submit" id="btnSalvar">💾 SALVAR REGISTRO</button>
             </form>
 
-            <div id="statusConexao" class="status">🔄 Verificando conexão...</div>
+            <div id="statusConexao" class="status">✅ Sistema Pronto</div>
+        </div>
+        
+        <div class="registros-container">
+            <h3>📋 Últimos Registros</h3>
+            <button id="btnExportar" class="btn-submit btn-exportar">📥 EXPORTAR PARA GOOGLE SHEETS</button>
+            <div class="table-wrapper">
+                <table id="tabelaRegistros">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Uniforme</th>
+                            <th>Tamanho</th>
+                            <th>Local</th>
+                            <th>Qtd</th>
+                            <th>Destinatário</th>
+                            <th>Movimento</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr><td colspan="7" style="text-align:center">Nenhum registro</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <div id="toast" class="toast"></div>
 
     <script>
-        // ⚠️ COLE SUA URL DO GOOGLE APPS SCRIPT AQUI ⚠️
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_G63vWBGuWmdakyLALC7aFZIMUtbXTeSP2HIIP5ewoESToypUqLMykLTLgIE0GQxAQw/exec';
-
-        // Função para mostrar mensagem
+        // Lista de registros
+        let registros = [];
+        
         function showToast(message, type) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -258,119 +338,98 @@
                 toast.className = 'toast';
             }, 3000);
         }
-
-        // Função para salvar no Google Sheets
-        async function salvarNoGoogleSheets(dados) {
-            try {
-                console.log('Enviando dados:', dados);
-                
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(dados)
-                });
-
-                console.log('Status da resposta:', response.status);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const resultado = await response.json();
-                console.log('Resultado:', resultado);
-
-                if (resultado.success) {
-                    showToast('✅ Registro salvo no Google Sheets!', 'success');
-                    return true;
-                } else {
-                    throw new Error(resultado.error);
-                }
-
-            } catch (error) {
-                console.error('Erro:', error);
-                showToast(`❌ Erro: ${error.message}`, 'error');
-                return false;
+        
+        function atualizarTabela() {
+            const tbody = document.getElementById('tableBody');
+            if (registros.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center">Nenhum registro</td></tr>';
+                return;
             }
-        }
-
-        // Verificar conexão
-        async function verificarConexao() {
-            const statusDiv = document.getElementById('statusConexao');
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'GET',
-                    mode: 'cors'
-                });
-                
-                if (response.ok) {
-                    statusDiv.innerHTML = '✅ Conectado ao Google Sheets - Pronto para salvar!';
-                    statusDiv.className = 'status online';
-                } else {
-                    throw new Error('Falha na conexão');
-                }
-            } catch (error) {
-                statusDiv.innerHTML = '⚠️ Google Sheets offline - Verifique a URL do script';
-                statusDiv.className = 'status offline';
-                console.error('Erro de conexão:', error);
-            }
-        }
-
-        // Configurar o formulário
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('uniformForm');
-            const btn = document.getElementById('btnSalvar');
             
-            // Data atual
+            tbody.innerHTML = registros.slice().reverse().map(r => `
+                <tr>
+                    <td>${r.data}</td>
+                    <td>${r.uniforme_tipo}</td>
+                    <td>${r.tamanho}</td>
+                    <td>${r.local}</td>
+                    <td>${r.quantidade}</td>
+                    <td>${r.destinatario}</td>
+                    <td><span class="badge ${r.tipo_movimento}">${r.tipo_movimento === 'entrada' ? '📥 ENTRADA' : '📤 SAÍDA'}</span></td>
+                </tr>
+            `).join('');
+        }
+        
+        function salvarLocalmente(dados) {
+            registros.push(dados);
+            if (registros.length > 100) registros.shift();
+            localStorage.setItem('uniformes_opcao', JSON.stringify(registros));
+            atualizarTabela();
+        }
+        
+        function carregarLocalmente() {
+            const saved = localStorage.getItem('uniformes_opcao');
+            if (saved) {
+                registros = JSON.parse(saved);
+                atualizarTabela();
+            }
+        }
+        
+        function exportarCSV() {
+            if (registros.length === 0) {
+                showToast('Nenhum registro para exportar', 'error');
+                return;
+            }
+            
+            const cabecalho = ['Data', 'Tipo Uniforme', 'Tamanho', 'Local', 'Quantidade', 'Destinatário', 'Movimento', 'Observação'];
+            const linhas = registros.map(r => [
+                r.data, r.uniforme_tipo, r.tamanho, r.local, r.quantidade, r.destinatario,
+                r.tipo_movimento === 'entrada' ? 'ENTRADA' : 'SAÍDA', r.observacao || ''
+            ]);
+            
+            const csv = [cabecalho, ...linhas].map(row => row.join(',')).join('\n');
+            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `uniformes_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            
+            showToast('✅ Arquivo CSV exportado! Importe no Google Sheets', 'success');
+        }
+        
+        document.getElementById('uniformForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const dados = {
+                data: document.getElementById('data').value,
+                uniforme_tipo: document.getElementById('uniformeTipo').value,
+                tamanho: document.getElementById('tamanho').value,
+                local: document.getElementById('local').value,
+                quantidade: parseInt(document.getElementById('quantidade').value),
+                destinatario: document.getElementById('destinatario').value,
+                tipo_movimento: document.getElementById('tipoMovimento').value,
+                observacao: document.getElementById('observacao').value || '',
+                timestamp: new Date().toISOString()
+            };
+            
+            if (!dados.uniforme_tipo || !dados.tamanho || !dados.local || !dados.destinatario || !dados.data) {
+                showToast('❌ Preencha todos os campos', 'error');
+                return;
+            }
+            
+            salvarLocalmente(dados);
+            
+            document.getElementById('uniformForm').reset();
             document.getElementById('data').valueAsDate = new Date();
+            document.getElementById('quantidade').value = '1';
             
-            // Verificar conexão
-            verificarConexao();
-            
-            // Evento do formulário
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                // Coletar dados
-                const dados = {
-                    data: document.getElementById('data').value,
-                    uniforme_tipo: document.getElementById('uniformeTipo').value,
-                    tamanho: document.getElementById('tamanho').value,
-                    local: document.getElementById('local').value,
-                    quantidade: parseInt(document.getElementById('quantidade').value),
-                    destinatario: document.getElementById('destinatario').value,
-                    tipo_movimento: document.getElementById('tipoMovimento').value,
-                    observacao: document.getElementById('observacao').value || ''
-                };
-                
-                // Validar
-                if (!dados.uniforme_tipo || !dados.tamanho || !dados.local || !dados.destinatario || !dados.data) {
-                    showToast('❌ Preencha todos os campos obrigatórios', 'error');
-                    return;
-                }
-                
-                // Desabilitar botão
-                btn.disabled = true;
-                btn.textContent = '💾 Salvando...';
-                
-                // Salvar
-                const sucesso = await salvarNoGoogleSheets(dados);
-                
-                if (sucesso) {
-                    // Limpar formulário
-                    form.reset();
-                    document.getElementById('data').valueAsDate = new Date();
-                    document.getElementById('quantidade').value = '1';
-                    document.getElementById('tipoMovimento').value = 'entrada';
-                }
-                
-                // Reabilitar botão
-                btn.disabled = false;
-                btn.textContent = '💾 SALVAR REGISTRO';
-            });
+            showToast('✅ Registro salvo! Use "Exportar" para enviar ao Google Sheets', 'success');
         });
+        
+        document.getElementById('btnExportar').addEventListener('click', exportarCSV);
+        document.getElementById('data').valueAsDate = new Date();
+        
+        carregarLocalmente();
     </script>
 </body>
 </html>
