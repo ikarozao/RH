@@ -249,27 +249,60 @@ async function enviarMovimentacao() {
         return;
     }
     
-    const estoqueInicial = getEstoqueAtual(uniforme, tamanho);
-    let estoqueFinal = estoqueInicial;
+    // Buscar estoque atual CORRETAMENTE
+    const supabase = initSupabase();
+    let estoqueAtual = 0;
+    
+    if (usuarioAtual && supabase) {
+        // Buscar estoque atual do Supabase
+        const { data: estData } = await supabase
+            .from('estoque')
+            .select('quantidade')
+            .eq('uniforme', uniforme)
+            .eq('tamanho', tamanho)
+            .single();
+        
+        estoqueAtual = estData ? estData.quantidade : 0;
+    } else {
+        estoqueAtual = getEstoqueAtual(uniforme, tamanho);
+    }
+    
+    document.getElementById('mov_estoque_inicial').value = estoqueAtual;
+    
+    let estoqueFinal = estoqueAtual;
     
     if(tipo === 'entrada') {
-        estoqueFinal = estoqueInicial + quantidade;
-    } else if(quantidade > estoqueInicial) {
-        showToast(`⚠️ Estoque insuficiente! Disponível: ${estoqueInicial}`, 'error');
+        estoqueFinal = estoqueAtual + quantidade;
+    } else if(quantidade > estoqueAtual) {
+        showToast(`⚠️ Estoque insuficiente! Disponível: ${estoqueAtual}`, 'error');
         return;
     } else {
-        estoqueFinal = estoqueInicial - quantidade;
+        estoqueFinal = estoqueAtual - quantidade;
     }
+    
+    document.getElementById('mov_estoque_final').value = estoqueFinal;
     
     const mov = {
         id: Date.now(),
         data, uniforme, tamanho, local, quantidade,
-        destinatario, tipo, estoqueInicial, estoqueFinal, observacao
+        destinatario, tipo, estoqueInicial: estoqueAtual, 
+        estoqueFinal: estoqueFinal, observacao
     };
     
+    // Salvar localmente
     movimentacoes.unshift(mov);
     salvarMovimentacoesLocal();
-    atualizarEstoque(uniforme, tamanho, quantidade, tipo, local);
+    
+    // Atualizar array local de estoque
+    const indexLocal = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
+    if(indexLocal !== -1) {
+        estoque[indexLocal].quantidade = estoqueFinal;
+        estoque[indexLocal].local = local;
+    } else {
+        estoque.push({ uniforme, tamanho, quantidade: estoqueFinal, local });
+    }
+    salvarEstoqueLocal();
+    atualizarTabelaEstoque();
     
     // Enviar para planilha
     try {
@@ -280,39 +313,67 @@ async function enviarMovimentacao() {
             body: JSON.stringify({
                 data, uniforme, tamanho, local, quantidade,
                 destinatario, tipo: tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA',
-                estoque_inicial: estoqueInicial, estoque_final: estoqueFinal, observacao,
+                estoque_inicial: estoqueAtual, estoque_final: estoqueFinal, observacao,
                 timestamp: new Date().toISOString()
             })
         });
-    } catch(e) { console.error(e); }
+    } catch(e) { console.error('Erro planilha:', e); }
     
-    const supabase = initSupabase();
+    // Salvar no Supabase
     if (usuarioAtual && supabase) {
+        // Salvar movimentação
         await supabase.from('movimentacoes').insert([{
             data, uniforme, tamanho, local, quantidade,
-            destinatario, tipo, estoque_inicial: estoqueInicial,
+            destinatario, tipo, estoque_inicial: estoqueAtual,
             estoque_final: estoqueFinal, observacao
         }]);
         
-        const estoqueExistente = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
+        // ATUALIZAR ESTOQUE NO SUPABASE (parte corrigida)
+        const { data: estoqueExistente } = await supabase
+            .from('estoque')
+            .select('id, quantidade')
+            .eq('uniforme', uniforme)
+            .eq('tamanho', tamanho)
+            .single();
         
-        if (estoqueExistente && estoqueExistente.id) {
-            await supabase.from('estoque').update({ quantidade: estoqueFinal, local }).eq('id', estoqueExistente.id);
+        if (estoqueExistente) {
+            // Atualizar estoque existente
+            await supabase
+                .from('estoque')
+                .update({ 
+                    quantidade: estoqueFinal, 
+                    local: local,
+                    ultima_atualizacao: new Date().toISOString()
+                })
+                .eq('id', estoqueExistente.id);
         } else {
-            const { data: newEstoque } = await supabase.from('estoque').insert([{ uniforme, tamanho, quantidade: estoqueFinal, local }]).select();
+            // Criar novo registro de estoque
+            const { data: newEstoque } = await supabase
+                .from('estoque')
+                .insert([{ 
+                    uniforme, tamanho, 
+                    quantidade: estoqueFinal, 
+                    local: local,
+                    ultima_atualizacao: new Date().toISOString()
+                }])
+                .select();
+            
             if (newEstoque && newEstoque[0]) {
-                const index = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
-                if (index !== -1) estoque[index].id = newEstoque[0].id;
+                const idx = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
+                if (idx !== -1) estoque[idx].id = newEstoque[0].id;
             }
         }
     }
     
     showToast('✅ Movimentação salva!');
     
+    // Limpar campos
     document.getElementById('mov_local').value = '';
     document.getElementById('mov_destinatario').value = '';
     document.getElementById('mov_observacao').value = '';
     document.getElementById('mov_quantidade').value = '1';
+    document.getElementById('mov_estoque_inicial').value = '';
+    document.getElementById('mov_estoque_final').value = '';
     
     atualizarTabelaMovimentacoes();
     atualizarFiltrosUniformes();
@@ -330,26 +391,51 @@ async function salvarEstoqueInicial() {
         return;
     }
     
+    // Atualizar array local
     const index = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
     
     if(index !== -1) {
         estoque[index].quantidade = quantidade;
         estoque[index].local = local;
+        estoque[index].ultimaAtualizacao = new Date().toLocaleString();
     } else {
-        estoque.push({ uniforme, tamanho, quantidade, local, ultimaAtualizacao: new Date().toLocaleString() });
+        estoque.push({ 
+            uniforme, tamanho, quantidade, local, 
+            ultimaAtualizacao: new Date().toLocaleString() 
+        });
     }
     
     salvarEstoqueLocal();
     atualizarTabelaEstoque();
     
+    // Salvar no Supabase
     const supabase = initSupabase();
     if (usuarioAtual && supabase) {
-        const existe = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
+        const { data: estoqueExistente } = await supabase
+            .from('estoque')
+            .select('id')
+            .eq('uniforme', uniforme)
+            .eq('tamanho', tamanho)
+            .single();
         
-        if (existe && existe.id) {
-            await supabase.from('estoque').update({ quantidade, local }).eq('id', existe.id);
+        if (estoqueExistente) {
+            await supabase
+                .from('estoque')
+                .update({ 
+                    quantidade: quantidade, 
+                    local: local,
+                    ultima_atualizacao: new Date().toISOString()
+                })
+                .eq('id', estoqueExistente.id);
         } else {
-            const { data: newEstoque } = await supabase.from('estoque').insert([{ uniforme, tamanho, quantidade, local }]).select();
+            const { data: newEstoque } = await supabase
+                .from('estoque')
+                .insert([{ 
+                    uniforme, tamanho, quantidade, local,
+                    ultima_atualizacao: new Date().toISOString()
+                }])
+                .select();
+            
             if (newEstoque && newEstoque[0]) {
                 const idx = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
                 if (idx !== -1) estoque[idx].id = newEstoque[0].id;
