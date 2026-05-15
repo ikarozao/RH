@@ -290,5 +290,32 @@
 <div id="toast" class="toast"></div>
 
 <script src="script.js"></script>
+
+<!-- Adicione ANTES do </body> -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Telas de Login (escondidas inicialmente) -->
+<div id="telaLogin" style="display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: #1e293b; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px;">
+        <h3 style="color: white; text-align: center;">🎽 Controle de Uniformes</h3>
+        <input type="email" id="loginEmail" placeholder="E-mail" style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 10px; border: none;">
+        <input type="password" id="loginSenha" placeholder="Senha" style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 10px; border: none;">
+        <button onclick="fazerLogin()" style="width: 100%; padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 10px; cursor: pointer;">Entrar</button>
+        <button onclick="mostrarCadastro()" style="width: 100%; margin-top: 10px; padding: 10px; background: #475569; color: white; border: none; border-radius: 10px; cursor: pointer;">Criar Conta</button>
+        <div id="loginErro" style="color: red; text-align: center; margin-top: 10px;"></div>
+    </div>
+</div>
+
+<div id="telaCadastro" style="display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: #1e293b; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px;">
+        <h3 style="color: white; text-align: center;">Criar Conta</h3>
+        <input type="email" id="cadEmail" placeholder="E-mail" style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 10px; border: none;">
+        <input type="password" id="cadSenha" placeholder="Senha (mínimo 6)" style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 10px; border: none;">
+        <input type="text" id="cadNome" placeholder="Seu Nome" style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 10px; border: none;">
+        <button onclick="fazerCadastro()" style="width: 100%; padding: 10px; background: #22c55e; color: white; border: none; border-radius: 10px; cursor: pointer;">Criar</button>
+        <button onclick="mostrarLogin()" style="width: 100%; margin-top: 10px; padding: 10px; background: #475569; color: white; border: none; border-radius: 10px; cursor: pointer;">Voltar</button>
+        <div id="cadErro" style="color: red; text-align: center; margin-top: 10px;"></div>
+    </div>
+</div>
 </body>
 </html>
