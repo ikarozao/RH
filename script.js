@@ -1,11 +1,12 @@
 // ========== CONFIGURAÇÕES ==========
 const API_URL = 'https://script.google.com/macros/s/AKfycbxgc8YtEM5kcf3YgckQa525CmRsx9Avy31P0U4vqJ9bl-WC3fOpLxdS_mLT5Td880pH/exec';
 
-// SUPABASE - COLOQUE SUAS CREDENCIAIS AQUI!
-const SUPABASE_URL = 'https://yhqdabswhtegwemajgnm.supabase.co';  // SUBSTITUA!
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlocWRhYnN3aHRlZ3dlbWFqZ25tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDM3MjgsImV4cCI6MjA5NDQxOTcyOH0.U68073tA6hGNKaxh4FN8q-Qd4BcXaNm9lzdZKTFW7Fs';  // SUBSTITUA!
+// SUPABASE - SUAS CREDENCIAIS
+const SUPABASE_URL = 'https://yhqdabswhtegwemajgnm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlocWRhYnN3aHRlZ3dlbWFqZ25tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDM3MjgsImV4cCI6MjA5NDQxOTcyOH0.U68073tA6hGNKaxh4FN8q-Qd4BcXaNm9lzdZKTFW7Fs';
 
-let supabase;
+// Variáveis globais
+let supabaseClient = null;
 let usuarioAtual = null;
 let tipoMovimento = 'entrada';
 let estoque = [];
@@ -14,24 +15,38 @@ let relatorioFiltrado = [];
 
 // ========== INICIAR SUPABASE ==========
 function initSupabase() {
-    if (!supabase && SUPABASE_URL && !SUPABASE_URL.includes('SEU_PROJETO')) {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        return true;
+    if (!supabaseClient && window.supabase) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
-    return false;
+    return supabaseClient;
 }
 
-// ========== LOGIN ==========
-async function fazerLogin() {
+// ========== FUNÇÕES DE LOGIN (GLOBAIS) ==========
+window.mostrarLogin = function() {
+    document.getElementById('telaCadastro').style.display = 'none';
+    document.getElementById('telaLogin').style.display = 'flex';
+};
+
+window.mostrarCadastro = function() {
+    document.getElementById('telaLogin').style.display = 'none';
+    document.getElementById('telaCadastro').style.display = 'flex';
+};
+
+window.fazerLogin = async function() {
     const email = document.getElementById('loginEmail').value;
     const senha = document.getElementById('loginSenha').value;
+    const erroDiv = document.getElementById('loginErro');
     
     if (!email || !senha) {
-        document.getElementById('loginErro').textContent = 'Preencha e-mail e senha!';
+        erroDiv.textContent = 'Preencha e-mail e senha!';
         return;
     }
     
-    initSupabase();
+    const supabase = initSupabase();
+    if (!supabase) {
+        erroDiv.textContent = 'Erro ao conectar com Supabase';
+        return;
+    }
     
     const { data, error } = await supabase.auth.signInWithPassword({
         email: email,
@@ -39,43 +54,47 @@ async function fazerLogin() {
     });
     
     if (error) {
-        document.getElementById('loginErro').textContent = 'Erro: ' + error.message;
+        erroDiv.textContent = 'Erro: ' + error.message;
         return;
     }
     
     usuarioAtual = data.user;
     document.getElementById('telaLogin').style.display = 'none';
     
-    // Carregar dados do usuário do Supabase
+    // Carregar dados
     await carregarDadosDoSupabase();
     
     // Mostrar sistema
     document.getElementById('sistemaPrincipal').style.display = 'block';
-    document.querySelector('.container').style.display = 'block';
     
     // Atualizar nome do usuário
-    const { data: perfil } = await supabase.from('perfis').select('nome').eq('id', usuarioAtual.id).single();
-    document.getElementById('userName').innerHTML = `👤 ${perfil?.nome || email.split('@')[0]}`;
+    const nomeUsuario = usuarioAtual.email?.split('@')[0] || 'Usuário';
+    document.getElementById('userName').innerHTML = `👤 ${nomeUsuario}`;
     
     showToast('✅ Login realizado! Dados sincronizados!');
-}
+};
 
-async function fazerCadastro() {
+window.fazerCadastro = async function() {
     const email = document.getElementById('cadEmail').value;
     const senha = document.getElementById('cadSenha').value;
     const nome = document.getElementById('cadNome').value;
+    const erroDiv = document.getElementById('cadErro');
     
     if (!email || !senha) {
-        document.getElementById('cadErro').textContent = 'Preencha todos os campos!';
+        erroDiv.textContent = 'Preencha todos os campos!';
         return;
     }
     
     if (senha.length < 6) {
-        document.getElementById('cadErro').textContent = 'Senha deve ter no mínimo 6 caracteres!';
+        erroDiv.textContent = 'Senha deve ter no mínimo 6 caracteres!';
         return;
     }
     
-    initSupabase();
+    const supabase = initSupabase();
+    if (!supabase) {
+        erroDiv.textContent = 'Erro ao conectar com Supabase';
+        return;
+    }
     
     const { data, error } = await supabase.auth.signUp({
         email: email,
@@ -84,78 +103,190 @@ async function fazerCadastro() {
     });
     
     if (error) {
-        document.getElementById('cadErro').textContent = 'Erro: ' + error.message;
+        erroDiv.textContent = 'Erro: ' + error.message;
         return;
     }
     
     alert('✅ Conta criada! Faça login para continuar.');
-    mostrarLogin();
-}
+    window.mostrarLogin();
+};
 
-async function fazerLogout() {
-    await supabase.auth.signOut();
+window.fazerLogout = async function() {
+    const supabase = initSupabase();
+    if (supabase) {
+        await supabase.auth.signOut();
+    }
     usuarioAtual = null;
-    
-    // Limpar dados locais
     estoque = [];
     movimentacoes = [];
     
-    // Mostrar login
     document.getElementById('sistemaPrincipal').style.display = 'none';
-    document.querySelector('.container').style.display = 'none';
     document.getElementById('telaLogin').style.display = 'flex';
     
     showToast('👋 Logout realizado!');
-}
-
-function mostrarLogin() {
-    document.getElementById('telaCadastro').style.display = 'none';
-    document.getElementById('telaLogin').style.display = 'flex';
-}
-
-function mostrarCadastro() {
-    document.getElementById('telaLogin').style.display = 'none';
-    document.getElementById('telaCadastro').style.display = 'flex';
-}
+};
 
 // ========== CARREGAR DADOS DO SUPABASE ==========
 async function carregarDadosDoSupabase() {
     if (!usuarioAtual) return;
     
     showToast('🔄 Sincronizando dados...');
+    const supabase = initSupabase();
     
-    // Carregar movimentações do usuário
+    // Carregar movimentações
     const { data: movData } = await supabase
         .from('movimentacoes')
         .select('*')
-        .eq('user_id', usuarioAtual.id)
         .order('data', { ascending: false });
     
     if (movData) {
         movimentacoes = movData;
-        salvarMovimentacoesLocal(); // Backup local
+        salvarMovimentacoesLocal();
         atualizarTabelaMovimentacoes();
         atualizarFiltrosUniformes();
         filtrarRelatorio();
     }
     
-    // Carregar estoque do usuário
+    // Carregar estoque
     const { data: estData } = await supabase
         .from('estoque')
-        .select('*')
-        .eq('user_id', usuarioAtual.id);
+        .select('*');
     
     if (estData) {
         estoque = estData;
-        salvarEstoqueLocal(); // Backup local
+        salvarEstoqueLocal();
         atualizarTabelaEstoque();
     }
     
     showToast('✅ Dados sincronizados!');
 }
 
-// ========== FUNÇÕES MODIFICADAS PARA SUPABASE ==========
-async function enviarMovimentacao() {
+// ========== FUNÇÕES ORIGINAIS (mantidas) ==========
+function showToast(msg, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.className = `toast ${type} show`;
+    setTimeout(() => toast.className = 'toast', 3000);
+}
+
+async function enviarParaPlanilha(dados) {
+    try {
+        const dadosFormatados = {
+            data: dados.data,
+            uniforme: dados.uniforme,
+            tamanho: dados.tamanho,
+            local: dados.local,
+            quantidade: parseInt(dados.quantidade),
+            destinatario: dados.destinatario,
+            tipo: dados.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA',
+            estoque_inicial: parseInt(dados.estoqueInicial),
+            estoque_final: parseInt(dados.estoqueFinal),
+            observacao: dados.observacao || '',
+            timestamp: new Date().toISOString()
+        };
+        
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosFormatados)
+        });
+        
+        console.log('✅ Enviado para planilha');
+        return true;
+    } catch(error) {
+        console.error('Erro planilha:', error);
+        return false;
+    }
+}
+
+function carregarDados() {
+    const savedEstoque = localStorage.getItem('opcao_telecom_estoque');
+    if(savedEstoque) estoque = JSON.parse(savedEstoque);
+    
+    const savedMov = localStorage.getItem('opcao_telecom_movimentacoes');
+    if(savedMov) movimentacoes = JSON.parse(savedMov);
+    
+    atualizarTabelaEstoque();
+    atualizarTabelaMovimentacoes();
+    atualizarFiltrosUniformes();
+    filtrarRelatorio();
+}
+
+function salvarEstoqueLocal() {
+    localStorage.setItem('opcao_telecom_estoque', JSON.stringify(estoque));
+}
+
+function salvarMovimentacoesLocal() {
+    localStorage.setItem('opcao_telecom_movimentacoes', JSON.stringify(movimentacoes));
+}
+
+function getEstoqueAtual(uniforme, tamanho) {
+    const item = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
+    return item ? item.quantidade : 0;
+}
+
+function atualizarEstoque(uniforme, tamanho, quantidade, tipo, local) {
+    const index = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
+    
+    if(index === -1 && tipo === 'entrada') {
+        estoque.push({
+            uniforme, tamanho, quantidade,
+            local: local || 'Almoxarifado',
+            ultimaAtualizacao: new Date().toLocaleString()
+        });
+    } else if(index !== -1) {
+        if(tipo === 'entrada') {
+            estoque[index].quantidade += quantidade;
+        } else {
+            estoque[index].quantidade -= quantidade;
+            if(estoque[index].quantidade < 0) estoque[index].quantidade = 0;
+        }
+        estoque[index].ultimaAtualizacao = new Date().toLocaleString();
+        if(local) estoque[index].local = local;
+    }
+    
+    salvarEstoqueLocal();
+    atualizarTabelaEstoque();
+}
+
+function verificarEstoque(uniforme, tamanho, quantidade) {
+    const atual = getEstoqueAtual(uniforme, tamanho);
+    document.getElementById('mov_estoque_inicial').value = atual;
+    
+    const final = tipoMovimento === 'entrada' ? atual + quantidade : atual - quantidade;
+    document.getElementById('mov_estoque_final').value = final >= 0 ? final : 0;
+    
+    if(tipoMovimento === 'saida' && final < 0) {
+        showToast(`⚠️ Estoque insuficiente! Disponível: ${atual}`, 'error');
+        return false;
+    }
+    return true;
+}
+
+window.setMovimento = function(tipo) {
+    tipoMovimento = tipo;
+    document.getElementById('mov_tipoMovimento').value = tipo;
+    
+    const btnEntrada = document.querySelector('.radio-btn.entrada');
+    const btnSaida = document.querySelector('.radio-btn.saida');
+    
+    if(tipo === 'entrada') {
+        btnEntrada.classList.add('ativo');
+        btnSaida.classList.remove('ativo');
+    } else {
+        btnSaida.classList.add('ativo');
+        btnEntrada.classList.remove('ativo');
+    }
+    
+    const u = document.getElementById('mov_uniforme').value;
+    const t = document.getElementById('mov_tamanho').value;
+    const q = parseInt(document.getElementById('mov_quantidade').value);
+    
+    if(u && t) verificarEstoque(u, t, q);
+};
+
+window.enviarMovimentacao = async function() {
     const uniforme = document.getElementById('mov_uniforme').value;
     const tamanho = document.getElementById('mov_tamanho').value;
     const local = document.getElementById('mov_local').value.trim();
@@ -184,57 +315,45 @@ async function enviarMovimentacao() {
     
     const mov = {
         id: Date.now(),
-        data,
-        uniforme,
-        tamanho,
-        local,
-        quantidade,
-        destinatario,
-        tipo,
-        estoqueInicial,
-        estoqueFinal,
-        observacao
+        data, uniforme, tamanho, local, quantidade,
+        destinatario, tipo, estoqueInicial, estoqueFinal, observacao
     };
     
-    // 1. SALVAR LOCAL (para já aparecer)
+    // Salvar local
     movimentacoes.unshift(mov);
     salvarMovimentacoesLocal();
     atualizarEstoque(uniforme, tamanho, quantidade, tipo, local);
     
-    // 2. ENVIAR PARA PLANILHA (Google Sheets)
+    // Enviar para planilha
     enviarParaPlanilha(mov);
     
-    // 3. SALVAR NO SUPABASE (se estiver logado)
-    if (usuarioAtual) {
-        const { error } = await supabase
+    // Salvar no Supabase
+    const supabase = initSupabase();
+    if (usuarioAtual && supabase) {
+        await supabase
             .from('movimentacoes')
             .insert([{
-                user_id: usuarioAtual.id,
                 data, uniforme, tamanho, local, quantidade,
                 destinatario, tipo, estoque_inicial: estoqueInicial,
                 estoque_final: estoqueFinal, observacao
             }]);
         
-        if (error) console.error('Erro Supabase:', error);
-        
         // Atualizar estoque no Supabase
         const estoqueExistente = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
         
-        if (estoqueExistente) {
+        if (estoqueExistente && estoqueExistente.id) {
             await supabase
                 .from('estoque')
                 .update({ quantidade: estoqueFinal, local, ultima_atualizacao: new Date() })
-                .eq('user_id', usuarioAtual.id)
-                .eq('uniforme', uniforme)
-                .eq('tamanho', tamanho);
+                .eq('id', estoqueExistente.id);
         } else {
             await supabase
                 .from('estoque')
-                .insert([{ user_id: usuarioAtual.id, uniforme, tamanho, quantidade: estoqueFinal, local }]);
+                .insert([{ uniforme, tamanho, quantidade: estoqueFinal, local }]);
         }
     }
     
-    showToast('✅ Movimentação salva! (Planilha + Nuvem)');
+    showToast('✅ Movimentação salva!');
     
     // Limpar campos
     document.getElementById('mov_local').value = '';
@@ -247,10 +366,9 @@ async function enviarMovimentacao() {
     atualizarTabelaMovimentacoes();
     atualizarFiltrosUniformes();
     filtrarRelatorio();
-}
+};
 
-// ========== SALVAR ESTOQUE MODIFICADO ==========
-async function salvarEstoqueInicial() {
+window.salvarEstoqueInicial = async function() {
     const uniforme = document.getElementById('est_uniforme').value;
     const tamanho = document.getElementById('est_tamanho').value;
     const quantidade = parseInt(document.getElementById('est_quantidade').value);
@@ -277,8 +395,8 @@ async function salvarEstoqueInicial() {
     salvarEstoqueLocal();
     atualizarTabelaEstoque();
     
-    // Salvar no Supabase se logado
-    if (usuarioAtual) {
+    const supabase = initSupabase();
+    if (usuarioAtual && supabase) {
         const existe = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
         
         if (existe && existe.id) {
@@ -289,16 +407,214 @@ async function salvarEstoqueInicial() {
         } else {
             await supabase
                 .from('estoque')
-                .insert([{ user_id: usuarioAtual.id, uniforme, tamanho, quantidade, local }]);
+                .insert([{ uniforme, tamanho, quantidade, local }]);
         }
     }
     
     showToast('✅ Estoque salvo!');
+};
+
+window.editarEstoque = function(uniforme, tamanho) {
+    const item = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
+    if(item) {
+        document.getElementById('est_uniforme').value = uniforme;
+        document.getElementById('est_tamanho').value = tamanho;
+        document.getElementById('est_quantidade').value = item.quantidade;
+        document.getElementById('est_local').value = item.local || '';
+        window.mudarPagina('estoque', document.querySelector('.nav-tab:nth-child(2)'));
+    }
+};
+
+window.excluirEstoque = function(uniforme, tamanho) {
+    if(confirm(`Remover ${uniforme} - ${tamanho}?`)) {
+        estoque = estoque.filter(e => !(e.uniforme === uniforme && e.tamanho === tamanho));
+        salvarEstoqueLocal();
+        atualizarTabelaEstoque();
+        showToast('✅ Produto removido!', 'success');
+    }
+};
+
+function atualizarTabelaEstoque() {
+    const tbody = document.getElementById('estoqueBody');
+    const totalItens = estoque.reduce((sum, i) => sum + i.quantidade, 0);
+    
+    document.getElementById('totalItens').textContent = totalItens;
+    document.getElementById('totalTipos').textContent = estoque.length;
+    document.getElementById('valorTotal').textContent = movimentacoes.length;
+    
+    if(estoque.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">Nenhum produto</td</tr>';
+        return;
+    }
+    
+    tbody.innerHTML = estoque.map(i => `
+        <tr>
+            <td>${i.uniforme}</td>
+            <td>${i.tamanho}</td>
+            <td><strong>${i.quantidade}</strong></td>
+            <td>${i.local || '-'}</td>
+            <td>
+                <button class="btn-icon btn-edit" onclick="editarEstoque('${i.uniforme}', '${i.tamanho}')">✏️</button>
+                <button class="btn-icon btn-delete" onclick="excluirEstoque('${i.uniforme}', '${i.tamanho}')">🗑️</button>
+            </td>
+        </tr>
+    `).join('');
 }
 
-// ========== VERIFICAR SE USUÁRIO JÁ ESTÁ LOGADO ==========
+function atualizarTabelaMovimentacoes() {
+    const tbody = document.getElementById('movimentacoesBody');
+    
+    if(movimentacoes.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9">Nenhuma movimentação</td</tr>';
+        return;
+    }
+    
+    tbody.innerHTML = movimentacoes.slice(0, 30).map(m => `
+        <tr>
+            <td>${m.data}</td>
+            <td>${m.uniforme}</td>
+            <td>${m.tamanho}</td>
+            <td>${m.local}</td>
+            <td>${m.quantidade}</td>
+            <td>${m.destinatario}</td>
+            <td><span class="badge ${m.tipo}">${m.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA'}</span></td>
+            <td>${m.estoque_inicial || m.estoqueInicial}</td>
+            <td>${m.estoque_final || m.estoqueFinal}</td>
+        </tr>
+    `).join('');
+}
+
+function atualizarFiltrosUniformes() {
+    const uniformes = [...new Set(movimentacoes.map(m => m.uniforme))];
+    const select = document.getElementById('filtroUniforme');
+    select.innerHTML = '<option value="">Todos uniformes</option>' + 
+        uniformes.map(u => `<option value="${u}">${u}</option>`).join('');
+}
+
+window.filtrarRelatorio = function() {
+    const mes = document.getElementById('filtroMes').value;
+    const tipo = document.getElementById('filtroTipo').value;
+    const uniforme = document.getElementById('filtroUniforme').value;
+    
+    let filtrados = [...movimentacoes];
+    
+    if(mes) filtrados = filtrados.filter(m => m.data.substring(0,7) === mes);
+    if(tipo !== 'todos') filtrados = filtrados.filter(m => m.tipo === tipo);
+    if(uniforme) filtrados = filtrados.filter(m => m.uniforme === uniforme);
+    
+    relatorioFiltrado = filtrados;
+    
+    const tbody = document.getElementById('relatorioBody');
+    if(filtrados.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9">Nenhum registro encontrado</td</tr>';
+    } else {
+        tbody.innerHTML = filtrados.slice(0, 100).map(m => `
+            <tr>
+                <td>${m.data}</td>
+                <td>${m.uniforme}</td>
+                <td>${m.tamanho}</td>
+                <td>${m.local}</td>
+                <td>${m.quantidade}</td>
+                <td>${m.destinatario}</td>
+                <td><span class="badge ${m.tipo}">${m.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA'}</span></td>
+                <td>${m.estoque_inicial || m.estoqueInicial}</td>
+                <td>${m.estoque_final || m.estoqueFinal}</td>
+            </tr>
+        `).join('');
+    }
+    
+    const grupos = new Map();
+    filtrados.forEach(m => {
+        const key = `${m.uniforme}|${m.tamanho}`;
+        if(!grupos.has(key)) {
+            grupos.set(key, {
+                uniforme: m.uniforme,
+                tamanho: m.tamanho,
+                entradas: 0,
+                saidas: 0
+            });
+        }
+        const item = grupos.get(key);
+        if(m.tipo === 'entrada') item.entradas += m.quantidade;
+        else item.saidas += m.quantidade;
+    });
+    
+    const resumoBody = document.getElementById('resumoUniformeBody');
+    const gruposArray = Array.from(grupos.values());
+    
+    if(gruposArray.length === 0) {
+        resumoBody.innerHTML = '<tr><td colspan="5">Nenhum dado</td</tr>';
+    } else {
+        resumoBody.innerHTML = gruposArray.map(g => {
+            const estoqueAtual = getEstoqueAtual(g.uniforme, g.tamanho);
+            return `
+                <tr>
+                    <td>${g.uniforme}</td>
+                    <td>${g.tamanho}</td>
+                    <td><strong>${estoqueAtual}</strong></td>
+                    <td>${g.entradas}</td>
+                    <td>${g.saidas}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+};
+
+window.limparFiltros = function() {
+    document.getElementById('filtroMes').value = '';
+    document.getElementById('filtroTipo').value = 'todos';
+    document.getElementById('filtroUniforme').value = '';
+    window.filtrarRelatorio();
+    showToast('✅ Filtros limpos!', 'success');
+};
+
+window.limparRelatorios = function() {
+    if(confirm('⚠️ Isso vai limpar TODO o histórico de movimentações. Confirmar?')) {
+        movimentacoes = [];
+        salvarMovimentacoesLocal();
+        atualizarTabelaMovimentacoes();
+        atualizarFiltrosUniformes();
+        window.filtrarRelatorio();
+        showToast('🗑️ Histórico limpo!', 'warning');
+    }
+};
+
+window.exportarRelatorioCSV = function() {
+    if(relatorioFiltrado.length === 0) {
+        showToast('Nenhum dado para exportar', 'error');
+        return;
+    }
+    
+    const headers = ['Data', 'Uniforme', 'Tamanho', 'Local', 'Quantidade', 'Destinatário', 'Tipo', 'Estoque Inicial', 'Estoque Final'];
+    const linhas = relatorioFiltrado.map(m => [
+        m.data, m.uniforme, m.tamanho, m.local, m.quantidade,
+        m.destinatario, m.tipo, m.estoque_inicial || m.estoqueInicial, m.estoque_final || m.estoqueFinal
+    ]);
+    
+    const csv = [headers, ...linhas].map(row => row.join(',')).join('\n');
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `relatorio_uniformes_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    showToast('📥 Relatório exportado!', 'success');
+};
+
+window.mudarPagina = function(pagina, elemento) {
+    document.querySelectorAll('.pagina').forEach(p => p.classList.remove('ativa'));
+    document.getElementById(`pagina${pagina.charAt(0).toUpperCase() + pagina.slice(1)}`).classList.add('ativa');
+    
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('ativo'));
+    if(elemento) elemento.classList.add('ativo');
+    
+    if(pagina === 'relatorios') window.filtrarRelatorio();
+};
+
+// ========== VERIFICAR SESSÃO AO CARREGAR ==========
 async function verificarSessao() {
-    initSupabase();
+    const supabase = initSupabase();
+    if (!supabase) return;
     
     const { data } = await supabase.auth.getSession();
     
@@ -306,32 +622,44 @@ async function verificarSessao() {
         usuarioAtual = data.session.user;
         document.getElementById('telaLogin').style.display = 'none';
         document.getElementById('sistemaPrincipal').style.display = 'block';
-        document.querySelector('.container').style.display = 'block';
         await carregarDadosDoSupabase();
         
-        const { data: perfil } = await supabase.from('perfis').select('nome').eq('id', usuarioAtual.id).single();
-        document.getElementById('userName').innerHTML = `👤 ${perfil?.nome || usuarioAtual.email?.split('@')[0]}`;
+        const nomeUsuario = usuarioAtual.email?.split('@')[0] || 'Usuário';
+        document.getElementById('userName').innerHTML = `👤 ${nomeUsuario}`;
     } else {
-        // Se não tiver sessão, carregar dados do localStorage mesmo
-        document.getElementById('sistemaPrincipal').style.display = 'block';
-        document.querySelector('.container').style.display = 'block';
-        document.getElementById('telaLogin').style.display = 'none';
-        carregarDados();
+        document.getElementById('telaLogin').style.display = 'flex';
+        document.getElementById('sistemaPrincipal').style.display = 'none';
+        carregarDados(); // Carrega dados do localStorage
     }
 }
 
-// ========== SUAS FUNÇÕES ORIGINAIS (mantidas) ==========
-// [Mantenha TODAS as suas funções originais aqui:]
-// showToast, enviarParaPlanilha, carregarDados, salvarEstoqueLocal, 
-// salvarMovimentacoesLocal, getEstoqueAtual, atualizarEstoque, 
-// verificarEstoque, setMovimento, editarEstoque, excluirEstoque,
-// atualizarTabelaEstoque, atualizarTabelaMovimentacoes, 
-// atualizarFiltrosUniformes, filtrarRelatorio, limparFiltros,
-// limparRelatorios, exportarRelatorioCSV, mudarPagina
-
-// ========== INICIALIZAÇÃO ==========
+// ========== EVENT LISTENERS ==========
 document.getElementById('mov_data').valueAsDate = new Date();
 document.getElementById('filtroMes').value = new Date().toISOString().substring(0,7);
 
-// Iniciar
+document.getElementById('mov_uniforme')?.addEventListener('change', () => {
+    const u = document.getElementById('mov_uniforme').value;
+    const t = document.getElementById('mov_tamanho').value;
+    const q = parseInt(document.getElementById('mov_quantidade').value);
+    if(u && t) verificarEstoque(u, t, q);
+});
+
+document.getElementById('mov_tamanho')?.addEventListener('change', () => {
+    const u = document.getElementById('mov_uniforme').value;
+    const t = document.getElementById('mov_tamanho').value;
+    const q = parseInt(document.getElementById('mov_quantidade').value);
+    if(u && t) verificarEstoque(u, t, q);
+});
+
+document.getElementById('mov_quantidade')?.addEventListener('input', () => {
+    const u = document.getElementById('mov_uniforme').value;
+    const t = document.getElementById('mov_tamanho').value;
+    const q = parseInt(document.getElementById('mov_quantidade').value);
+    if(u && t) verificarEstoque(u, t, q);
+});
+
+// ========== INICIAR ==========
+initSupabase();
 verificarSessao();
+
+showToast('✅ Sistema pronto!');
