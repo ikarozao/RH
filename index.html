@@ -5,283 +5,327 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Controle de Uniformes - Opção Telecom</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<div class="container">
-    <header>
-        <img src="img/4e2e86a1-d64b-49f7-bf5d-9f0b48e0eac6.webp" alt="">
 
-    </header>
-
-    <!-- Status da Conexão -->
-    <div class="card">
-        <h3>Status do Sistema</h3>
-        <div id="statusConexao" class="status-conexao">
-            Conectado ao SheetDB - Dados vão para a planilha automaticamente!
-        </div>
-        <div class="info-url">
-            URL: https://sheetdb.io/api/v1/vb7gan9e7kd8a
-        </div>
-    </div>
-
-    <!-- Navegação -->
-    <div class="nav-tabs">
-        <button class="nav-tab ativo" onclick="mudarPagina('movimentacao', this)">MOVIMENTAÇÕES</button>
-        <button class="nav-tab" onclick="mudarPagina('estoque', this)">ESTOQUE</button>
-        <button class="nav-tab" onclick="mudarPagina('relatorios', this)">RELATÓRIOS</button>
-    </div>
-
-    <!-- PÁGINA 1: MOVIMENTAÇÕES -->
-    <div id="paginaMovimentacao" class="pagina ativa">
-        <div class="card">
-            <h3>Registrar Movimentação</h3>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Uniforme *</label>
-                    <select id="mov_uniforme" required>
-                        <option value="">Selecione</option>
-                        <option>Camiseta Manga Curta</option>
-                        <option>Camiseta Manga Longa</option>
-                        <option>Calça</option>
-                        <option>Jaqueta</option>
-                        <option>Bermuda</option>
-                        <option>Touca</option>
-                        <option>Luvas</option>
-                        <option>Colete</option>
-                        <option>Capacete</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Tamanho *</label>
-                    <select id="mov_tamanho" required>
-                        <option value="">Selecione</option>
-                        <option>PP</option>
-                        <option>P</option>
-                        <option>P Feminino</option>
-                        <option>M</option>
-                        <option>M Feminino</option>
-                        <option>G</option>
-                        <option>G Feminino</option>
-                        <option>GG</option>
-                        <option>GG Feminino</option>
-                        <option>XGG</option>
-                        <option>Único</option>
-                    </select>
-                </div>
-            </div>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Local/Setor *</label>
-                    <input type="text" id="mov_local" placeholder="Ex: Almoxarifado">
-                </div>
-                <div class="form-group">
-                    <label>Quantidade *</label>
-                    <input type="number" id="mov_quantidade" min="1" value="1">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Destinatário *</label>
-                    <input type="text" id="mov_destinatario" placeholder="Nome">
-                </div>
-                <div class="form-group">
-                    <label>Data *</label>
-                    <input type="date" id="mov_data">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Tipo</label>
-                <div class="radio-group">
-                    <div class="radio-btn entrada ativo" onclick="setMovimento('entrada')">ENTRADA</div>
-                    <div class="radio-btn saida" onclick="setMovimento('saida')">SAÍDA</div>
-                </div>
-                <input type="hidden" id="mov_tipoMovimento" value="entrada">
-            </div>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Estoque Inicial</label>
-                    <input type="text" id="mov_estoque_inicial" readonly>
-                </div>
-                <div class="form-group">
-                    <label>Estoque Final</label>
-                    <input type="text" id="mov_estoque_final" readonly>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Observação</label>
-                <textarea id="mov_observacao" rows="2"></textarea>
-            </div>
-            <button class="btn-primary" id="btnSalvarMov" onclick="enviarMovimentacao()">SALVAR NA PLANILHA</button>
-        </div>
+<!-- TELA DE LOGIN (aparece primeiro) -->
+<div id="telaLogin" style="display: flex; position: fixed; top:0; left:0; right:0; bottom:0; background: #0f172a; z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: #1e293b; padding: 40px; border-radius: 24px; width: 90%; max-width: 400px; border: 1px solid #334155;">
+        <img id="imgopc" src="img/4e2e86a1-d64b-49f7-bf5d-9f0b48e0eac6.webp" alt="">
+        <p style="color: #94a3b8; text-align: center; margin-bottom: 30px;">Gestão de Uniformes</p>
         
+        <input type="email" id="loginEmail" placeholder="E-mail" style="width: 100%; margin: 10px 0; padding: 12px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white;">
+        <input type="password" id="loginSenha" placeholder="Senha" style="width: 100%; margin: 10px 0; padding: 12px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white;">
+        
+        <button onclick="fazerLogin()" style="width: 100%; margin-top: 20px; padding: 12px; background: linear-gradient(135deg, #3b82f6, #1e40af); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold;">Entrar</button>
+        
+        <button onclick="mostrarCadastro()" style="width: 100%; margin-top: 10px; padding: 12px; background: #475569; color: white; border: none; border-radius: 12px; cursor: pointer;">Criar Conta</button>
+        
+        <div id="loginErro" style="color: #ef4444; text-align: center; margin-top: 15px; font-size: 12px;"></div>
+    </div>
+</div>
+
+<!-- TELA DE CADASTRO -->
+<div id="telaCadastro" style="display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: #0f172a; z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: #1e293b; padding: 40px; border-radius: 24px; width: 90%; max-width: 400px; border: 1px solid #334155;">
+        <h3 style="color: white; text-align: center; font-size: 24px; margin-bottom: 20px;">Criar Conta</h3>
+        
+        <input type="email" id="cadEmail" placeholder="E-mail" style="width: 100%; margin: 10px 0; padding: 12px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white;">
+        <input type="password" id="cadSenha" placeholder="Senha (mínimo 6)" style="width: 100%; margin: 10px 0; padding: 12px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white;">
+        <input type="text" id="cadNome" placeholder="Seu Nome" style="width: 100%; margin: 10px 0; padding: 12px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white;">
+        
+        <button onclick="fazerCadastro()" style="width: 100%; margin-top: 20px; padding: 12px; background: linear-gradient(135deg, #22c55e, #15803d); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold;">Criar Conta</button>
+        
+        <button onclick="mostrarLogin()" style="width: 100%; margin-top: 10px; padding: 12px; background: #475569; color: white; border: none; border-radius: 12px; cursor: pointer;">← Voltar para Login</button>
+        
+        <div id="cadErro" style="color: #ef4444; text-align: center; margin-top: 15px; font-size: 12px;"></div>
+    </div>
+</div>
+
+<!-- SISTEMA PRINCIPAL (SÓ APARECE DEPOIS DO LOGIN) -->
+<div id="sistemaPrincipal" style="display: none;">
+    <div class="container">
+        <header>
+            <img src="img/4e2e86a1-d64b-49f7-bf5d-9f0b48e0eac6.webp" alt="">
+        </header>
+
+        <!-- Status da Conexão -->
         <div class="card">
-            <h3>📋 Últimas Movimentações</h3>
-            <div class="table-wrapper">
-                <table id="tabelaMovimentacoes">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Uniforme</th>
-                            <th>Tamanho</th>
-                            <th>Local</th>
-                            <th>Qtd</th>
-                            <th>Destinatário</th>
-                            <th>Tipo</th>
-                            <th>Est.Ini</th>
-                            <th>Est.Fim</th>
-                        </tr>
-                    </thead>
-                    <tbody id="movimentacoesBody">
-                        <tr><td colspan="9" style="text-align:center">Carregando...</td></tr>
-                    </tbody>
-                </table>
+            <h3>Status do Sistema</h3>
+            <div id="statusConexao" class="status-conexao">
+                Conectado ao SheetDB - Dados vão para a planilha automaticamente!
+            </div>
+            <div class="info-url">
+                URL: https://sheetdb.io/api/v1/vb7gan9e7kd8a
             </div>
         </div>
-    </div>
 
-    <!-- PÁGINA 2: ESTOQUE -->
-    <div id="paginaEstoque" class="pagina">
-        <div class="card">
-            <h3>Gerenciar Estoque</h3>
-            <div class="grid-3">
+        <!-- Info do Usuário Logado -->
+        <div class="card" style="background: #0f172a; text-align: center;">
+            <span id="userName" style="color: #3b82f6; font-weight: bold;">Carregando...</span>
+            <button onclick="fazerLogout()" style="margin-left: 15px; padding: 5px 15px; background: #ef4444; color: white; border: none; border-radius: 20px; cursor: pointer;">Sair</button>
+        </div>
+
+        <!-- Navegação -->
+        <div class="nav-tabs">
+            <button class="nav-tab ativo" onclick="mudarPagina('movimentacao', this)">MOVIMENTAÇÕES</button>
+            <button class="nav-tab" onclick="mudarPagina('estoque', this)">ESTOQUE</button>
+            <button class="nav-tab" onclick="mudarPagina('relatorios', this)">RELATÓRIOS</button>
+        </div>
+
+        <!-- PÁGINA 1: MOVIMENTAÇÕES -->
+        <div id="paginaMovimentacao" class="pagina ativa">
+            <div class="card">
+                <h3>Registrar Movimentação</h3>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Uniforme *</label>
+                        <select id="mov_uniforme" required>
+                            <option value="">Selecione</option>
+                            <option>Camiseta Manga Curta</option>
+                            <option>Camiseta Manga Longa</option>
+                            <option>Calça</option>
+                            <option>Jaqueta</option>
+                            <option>Bermuda</option>
+                            <option>Touca</option>
+                            <option>Luvas</option>
+                            <option>Colete</option>
+                            <option>Capacete</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tamanho *</label>
+                        <select id="mov_tamanho" required>
+                            <option value="">Selecione</option>
+                            <option>PP</option>
+                            <option>P</option>
+                            <option>P Feminino</option>
+                            <option>M</option>
+                            <option>M Feminino</option>
+                            <option>G</option>
+                            <option>G Feminino</option>
+                            <option>GG</option>
+                            <option>GG Feminino</option>
+                            <option>XGG</option>
+                            <option>Único</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Local/Setor *</label>
+                        <input type="text" id="mov_local" placeholder="Ex: Almoxarifado">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade *</label>
+                        <input type="number" id="mov_quantidade" min="1" value="1">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Destinatário *</label>
+                        <input type="text" id="mov_destinatario" placeholder="Nome">
+                    </div>
+                    <div class="form-group">
+                        <label>Data *</label>
+                        <input type="date" id="mov_data">
+                    </div>
+                </div>
                 <div class="form-group">
-                    <label>Uniforme</label>
-                    <select id="est_uniforme">
-                        <option value="">Selecione</option>
-                        <option>Camiseta Manga Curta</option>
-                        <option>Camiseta Manga Longa</option>
-                        <option>Calça</option>
-                        <option>Jaqueta</option>
-                        <option>Bermuda</option>
-                        <option>Touca</option>
-                        <option>Luvas</option>
-                        <option>Colete</option>
-                        <option>Capacete</option>
+                    <label>Tipo</label>
+                    <div class="radio-group">
+                        <div class="radio-btn entrada ativo" onclick="setMovimento('entrada')">ENTRADA</div>
+                        <div class="radio-btn saida" onclick="setMovimento('saida')">SAÍDA</div>
+                    </div>
+                    <input type="hidden" id="mov_tipoMovimento" value="entrada">
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Estoque Inicial</label>
+                        <input type="text" id="mov_estoque_inicial" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Estoque Final</label>
+                        <input type="text" id="mov_estoque_final" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Observação</label>
+                    <textarea id="mov_observacao" rows="2"></textarea>
+                </div>
+                <button class="btn-primary" id="btnSalvarMov" onclick="enviarMovimentacao()">SALVAR NA PLANILHA</button>
+            </div>
+            
+            <div class="card">
+                <h3>Últimas Movimentações</h3>
+                <div class="table-wrapper">
+                    <table id="tabelaMovimentacoes">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Uniforme</th>
+                                <th>Tamanho</th>
+                                <th>Local</th>
+                                <th>Qtd</th>
+                                <th>Destinatário</th>
+                                <th>Tipo</th>
+                                <th>Est.Ini</th>
+                                <th>Est.Fim</th>
+                            </tr>
+                        </thead>
+                        <tbody id="movimentacoesBody">
+                            <tr><td colspan="9" style="text-align:center">Carregando...</td</tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA 2: ESTOQUE -->
+        <div id="paginaEstoque" class="pagina">
+            <div class="card">
+                <h3>Gerenciar Estoque</h3>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Uniforme</label>
+                        <select id="est_uniforme">
+                            <option value="">Selecione</option>
+                            <option>Camiseta Manga Curta</option>
+                            <option>Camiseta Manga Longa</option>
+                            <option>Calça</option>
+                            <option>Jaqueta</option>
+                            <option>Bermuda</option>
+                            <option>Touca</option>
+                            <option>Luvas</option>
+                            <option>Colete</option>
+                            <option>Capacete</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tamanho</label>
+                        <select id="est_tamanho">
+                            <option value="">Selecione</option>
+                            <option>PP</option>
+                            <option>P</option>
+                            <option>P Feminino</option>
+                            <option>M</option>
+                            <option>M Feminino</option>
+                            <option>G</option>
+                            <option>G Feminino</option>
+                            <option>GG</option>
+                            <option>GG Feminino</option>
+                            <option>XGG</option>
+                            <option>Único</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade</label>
+                        <input type="number" id="est_quantidade" min="0" value="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Local</label>
+                    <input type="text" id="est_local" placeholder="Local de armazenamento">
+                </div>
+                <button class="btn-primary" onclick="salvarEstoqueInicial()">SALVAR ESTOQUE</button>
+            </div>
+            
+            <div class="card">
+                <h3>Resumo do Estoque</h3>
+                <div class="resumo-estoque">
+                    <div class="resumo-item">
+                        <div class="numero" id="totalItens">0</div>
+                        <div class="label">Total Itens</div>
+                    </div>
+                    <div class="resumo-item">
+                        <div class="numero" id="totalTipos">0</div>
+                        <div class="label">Tipos</div>
+                    </div>
+                    <div class="resumo-item">
+                        <div class="numero" id="valorTotal">0</div>
+                        <div class="label">Movimentações</div>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table id="tabelaEstoque">
+                        <thead>
+                            <tr>
+                                <th>Uniforme</th>
+                                <th>Tamanho</th>
+                                <th>Qtd</th>
+                                <th>Local</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="estoqueBody">
+                            <tr><td colspan="5">Carregando...</td</tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA 3: RELATÓRIOS -->
+        <div id="paginaRelatorios" class="pagina">
+            <div class="card">
+                <h3>Relatório de Movimentações</h3>
+                <div class="filtros">
+                    <input type="month" id="filtroMes" onchange="filtrarRelatorio()">
+                    <select id="filtroTipo" onchange="filtrarRelatorio()">
+                        <option value="todos">Todos os tipos</option>
+                        <option value="entrada">Apenas Entradas</option>
+                        <option value="saida">Apenas Saídas</option>
+                    </select>
+                    <select id="filtroUniforme" onchange="filtrarRelatorio()">
+                        <option value="">Todos uniformes</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Tamanho</label>
-                    <select id="est_tamanho">
-                        <option value="">Selecione</option>
-                        <option>PP</option>
-                        <option>P</option>
-                        <option>P Feminino</option>
-                        <option>M</option>
-                        <option>M Feminino</option>
-                        <option>G</option>
-                        <option>G Feminino</option>
-                        <option>GG</option>
-                        <option>GG Feminino</option>
-                        <option>XGG</option>
-                        <option>Único</option>
-                    </select>
+                <div class="acoes-botoes">
+                    <button class="btn-primary btn-secondary" onclick="limparFiltros()">Limpar Filtros</button>
+                    <button class="btn-primary btn-warning" onclick="limparRelatorios()">Limpar Histórico</button>
+                    <button class="btn-primary btn-secondary" onclick="exportarRelatorioCSV()">Exportar CSV</button>
                 </div>
-                <div class="form-group">
-                    <label>Quantidade</label>
-                    <input type="number" id="est_quantidade" min="0" value="0">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Local</label>
-                <input type="text" id="est_local" placeholder="Local de armazenamento">
-            </div>
-            <button class="btn-primary" onclick="salvarEstoqueInicial()">SALVAR ESTOQUE</button>
-        </div>
-        
-        <div class="card">
-            <h3>Resumo do Estoque</h3>
-            <div class="resumo-estoque">
-                <div class="resumo-item">
-                    <div class="numero" id="totalItens">0</div>
-                    <div class="label">Total Itens</div>
-                </div>
-                <div class="resumo-item">
-                    <div class="numero" id="totalTipos">0</div>
-                    <div class="label">Tipos</div>
-                </div>
-                <div class="resumo-item">
-                    <div class="numero" id="valorTotal">0</div>
-                    <div class="label">Movimentações</div>
+                <div class="table-wrapper">
+                    <table id="tabelaRelatorio">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Uniforme</th>
+                                <th>Tamanho</th>
+                                <th>Local</th>
+                                <th>Qtd</th>
+                                <th>Destinatário</th>
+                                <th>Tipo</th>
+                                <th>Est.Ini</th>
+                                <th>Est.Fim</th>
+                            </tr>
+                        </thead>
+                        <tbody id="relatorioBody">
+                            <tr><td colspan="9">Carregando...</td</tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="table-wrapper">
-                <table id="tabelaEstoque">
-                    <thead>
-                        <tr>
-                            <th>Uniforme</th>
-                            <th>Tamanho</th>
-                            <th>Qtd</th>
-                            <th>Local</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="estoqueBody">
-                        <tr><td colspan="5">Carregando...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- PÁGINA 3: RELATÓRIOS -->
-    <div id="paginaRelatorios" class="pagina">
-        <div class="card">
-            <h3>Relatório de Movimentações</h3>
-            <div class="filtros">
-                <input type="month" id="filtroMes" onchange="filtrarRelatorio()">
-                <select id="filtroTipo" onchange="filtrarRelatorio()">
-                    <option value="todos">Todos os tipos</option>
-                    <option value="entrada">Apenas Entradas</option>
-                    <option value="saida">Apenas Saídas</option>
-                </select>
-                <select id="filtroUniforme" onchange="filtrarRelatorio()">
-                    <option value="">Todos uniformes</option>
-                </select>
-            </div>
-            <div class="acoes-botoes">
-                <button class="btn-primary btn-secondary" onclick="limparFiltros()">Limpar Filtros</button>
-                <button class="btn-primary btn-warning" onclick="limparRelatorios()">Limpar Histórico</button>
-                <button class="btn-primary btn-secondary" onclick="exportarRelatorioCSV()">Exportar CSV</button>
-            </div>
-            <div class="table-wrapper">
-                <table id="tabelaRelatorio">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Uniforme</th>
-                            <th>Tamanho</th>
-                            <th>Local</th>
-                            <th>Qtd</th>
-                            <th>Destinatário</th>
-                            <th>Tipo</th>
-                            <th>Est.Ini</th>
-                            <th>Est.Fim</th>
-                        </tr>
-                    </thead>
-                    <tbody id="relatorioBody">
-                        <tr><td colspan="9">Carregando...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <div class="card">
-            <h3>📊 Resumo por Uniforme</h3>
-            <div class="table-wrapper">
-                <table id="tabelaResumoUniforme">
-                    <thead>
-                        <tr>
-                            <th>Uniforme</th>
-                            <th>Tamanho</th>
-                            <th>Estoque</th>
-                            <th>Entradas</th>
-                            <th>Saídas</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resumoUniformeBody">
-                        <tr><td colspan="5">Carregando...</td></tr>
-                    </tbody>
-                </table>
+            
+            <div class="card">
+                <h3>Resumo por Uniforme</h3>
+                <div class="table-wrapper">
+                    <table id="tabelaResumoUniforme">
+                        <thead>
+                            <tr>
+                                <th>Uniforme</th>
+                                <th>Tamanho</th>
+                                <th>Estoque</th>
+                                <th>Entradas</th>
+                                <th>Saídas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resumoUniformeBody">
+                            <tr><td colspan="5">Carregando...</td</tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -290,32 +334,5 @@
 <div id="toast" class="toast"></div>
 
 <script src="script.js"></script>
-
-<!-- Adicione ANTES do </body> -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- Telas de Login (escondidas inicialmente) -->
-<div id="telaLogin" style="display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center;">
-    <div style="background: #1e293b; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px;">
-        <h3 style="color: white; text-align: center;">🎽 Controle de Uniformes</h3>
-        <input type="email" id="loginEmail" placeholder="E-mail" style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 10px; border: none;">
-        <input type="password" id="loginSenha" placeholder="Senha" style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 10px; border: none;">
-        <button onclick="fazerLogin()" style="width: 100%; padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 10px; cursor: pointer;">Entrar</button>
-        <button onclick="mostrarCadastro()" style="width: 100%; margin-top: 10px; padding: 10px; background: #475569; color: white; border: none; border-radius: 10px; cursor: pointer;">Criar Conta</button>
-        <div id="loginErro" style="color: red; text-align: center; margin-top: 10px;"></div>
-    </div>
-</div>
-
-<div id="telaCadastro" style="display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center;">
-    <div style="background: #1e293b; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px;">
-        <h3 style="color: white; text-align: center;">Criar Conta</h3>
-        <input type="email" id="cadEmail" placeholder="E-mail" style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 10px; border: none;">
-        <input type="password" id="cadSenha" placeholder="Senha (mínimo 6)" style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 10px; border: none;">
-        <input type="text" id="cadNome" placeholder="Seu Nome" style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 10px; border: none;">
-        <button onclick="fazerCadastro()" style="width: 100%; padding: 10px; background: #22c55e; color: white; border: none; border-radius: 10px; cursor: pointer;">Criar</button>
-        <button onclick="mostrarLogin()" style="width: 100%; margin-top: 10px; padding: 10px; background: #475569; color: white; border: none; border-radius: 10px; cursor: pointer;">Voltar</button>
-        <div id="cadErro" style="color: red; text-align: center; margin-top: 10px;"></div>
-    </div>
-</div>
 </body>
 </html>
