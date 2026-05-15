@@ -4,268 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Controle de Uniformes - Opção Telecom</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #0f172a;
-            min-height: 100vh;
-            padding: 16px 12px;
-        }
-        
-        .container { max-width: 1400px; margin: 0 auto; }
-        
-        .nav-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .nav-tab {
-            background: rgba(255,255,255,0.08);
-            color: #e2e8f0;
-            padding: 10px 16px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-            border: none;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
-        .nav-tab.ativo {
-            background: linear-gradient(135deg, #3b82f6, #1e40af);
-            color: white;
-            box-shadow: 0 4px 12px rgba(59,130,246,0.3);
-        }
-        .nav-tab:hover { background: rgba(255,255,255,0.15); }
-        
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 20px;
-        }
-        header h1 { font-size: 1.5em; letter-spacing: 1px; }
-        header p { opacity: 0.7; font-size: 0.8em; margin-top: 4px; }
-        
-        .card {
-            background: #1e293b;
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 16px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            border: 1px solid #334155;
-        }
-        .card h3 {
-            font-size: 1em;
-            color: #f1f5f9;
-            margin-bottom: 16px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #3b82f6;
-        }
-        
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-        
-        .form-group { margin-bottom: 12px; }
-        .form-group label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            color: #94a3b8;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-        }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1.5px solid #334155;
-            border-radius: 12px;
-            font-size: 14px;
-            background: #0f172a;
-            color: #f1f5f9;
-        }
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            background: #1e293b;
-        }
-        
-        .btn-primary {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #3b82f6, #1e40af);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 8px;
-            transition: all 0.2s;
-        }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59,130,246,0.4); }
-        
-        .btn-secondary { background: linear-gradient(135deg, #475569, #1e293b); }
-        .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        
-        .table-wrapper { overflow-x: auto; margin-top: 12px; border-radius: 12px; max-height: 400px; overflow-y: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #334155; color: #cbd5e1; }
-        th { background: #0f172a; color: #94a3b8; font-weight: 600; font-size: 11px; text-transform: uppercase; position: sticky; top: 0; }
-        tr:hover td { background: #334155; }
-        
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: bold;
-        }
-        .badge.entrada { background: #065f46; color: #34d399; }
-        .badge.saida { background: #991b1b; color: #fca5a5; }
-        
-        .radio-group { display: flex; gap: 10px; }
-        .radio-btn {
-            flex: 1;
-            padding: 10px;
-            border: 1.5px solid #334155;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            font-weight: 600;
-            background: #0f172a;
-            color: #cbd5e1;
-        }
-        .radio-btn.entrada.ativo { background: #065f46; border-color: #34d399; color: #34d399; }
-        .radio-btn.saida.ativo { background: #991b1b; border-color: #fca5a5; color: #fca5a5; }
-        
-        .resumo-estoque {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        .resumo-item {
-            background: #0f172a;
-            padding: 14px;
-            border-radius: 16px;
-            text-align: center;
-            border: 1px solid #334155;
-        }
-        .resumo-item .numero { font-size: 24px; font-weight: bold; color: #3b82f6; }
-        .resumo-item .label { font-size: 11px; color: #94a3b8; margin-top: 4px; }
-        
-        .filtros {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-        .filtros select, .filtros input {
-            flex: 1;
-            min-width: 120px;
-            padding: 10px;
-            border: 1.5px solid #334155;
-            border-radius: 12px;
-            background: #0f172a;
-            color: #f1f5f9;
-            font-size: 13px;
-        }
-        
-        .pagina { display: none; }
-        .pagina.ativa { display: block; }
-        
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 40px;
-            z-index: 1000;
-            display: none;
-            font-size: 13px;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            border: 1px solid #334155;
-        }
-        .toast.show { display: block; animation: fadeInUp 0.3s ease; }
-        .toast.success { background: #065f46; color: #34d399; }
-        .toast.error { background: #991b1b; color: #fca5a5; }
-        .toast.warning { background: #b45309; color: #fde68a; }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        
-        .btn-icon { padding: 6px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; border: none; margin: 2px; }
-        .btn-edit { background: #3b82f6; color: white; }
-        .btn-delete { background: #ef4444; color: white; }
-        
-        .acoes-botoes { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-        .acoes-botoes button { flex: 1; padding: 10px; font-size: 13px; }
-        
-        @media (max-width: 640px) {
-            body { padding: 12px 8px; }
-            .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 8px; }
-            .nav-tab { padding: 8px 14px; font-size: 12px; }
-            .card { padding: 14px; }
-            th, td { padding: 8px 6px; font-size: 11px; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
     <header>
-        <h1>🎽 CONTROLE DE UNIFORMES</h1>
-        <p>Opção Telecom - Gestão de Estoque</p>
+        <h1><img src="img/4e2e86a1-d64b-49f7-bf5d-9f0b48e0eac6.webp" alt=""></h1>
+
     </header>
 
     <!-- Status da Conexão -->
     <div class="card">
-        <h3>✅ Status do Sistema</h3>
-        <div id="statusConexao" style="background: #065f46; padding: 10px; border-radius: 12px; text-align: center; color: #34d399; font-weight: bold;">
-            🟢 Conectado ao SheetDB - Dados vão para a planilha automaticamente!
+        <h3>Status do Sistema</h3>
+        <div id="statusConexao" class="status-conexao">
+            Conectado ao SheetDB - Dados vão para a planilha automaticamente!
         </div>
-        <div style="font-size: 11px; color: #94a3b8; text-align: center; margin-top: 8px;">
+        <div class="info-url">
             URL: https://sheetdb.io/api/v1/vb7gan9e7kd8a
         </div>
     </div>
 
     <!-- Navegação -->
     <div class="nav-tabs">
-        <button class="nav-tab ativo" onclick="mudarPagina('movimentacao', this)">📊 MOVIMENTAÇÕES</button>
-        <button class="nav-tab" onclick="mudarPagina('estoque', this)">📦 ESTOQUE</button>
-        <button class="nav-tab" onclick="mudarPagina('relatorios', this)">📈 RELATÓRIOS</button>
+        <button class="nav-tab ativo" onclick="mudarPagina('movimentacao', this)">MOVIMENTAÇÕES</button>
+        <button class="nav-tab" onclick="mudarPagina('estoque', this)">ESTOQUE</button>
+        <button class="nav-tab" onclick="mudarPagina('relatorios', this)">RELATÓRIOS</button>
     </div>
 
     <!-- PÁGINA 1: MOVIMENTAÇÕES -->
     <div id="paginaMovimentacao" class="pagina ativa">
         <div class="card">
-            <h3>📝 Registrar Movimentação</h3>
+            <h3>Registrar Movimentação</h3>
             <div class="grid-2">
                 <div class="form-group">
                     <label>Uniforme *</label>
                     <select id="mov_uniforme" required>
                         <option value="">Selecione</option>
-                        <option>Camiseta Manga Curta</option><option>Camiseta Manga Longa</option>
-                        <option>Calça</option><option>Jaqueta</option><option>Bermuda</option>
-                        <option>Touca</option><option>Luvas</option><option>Colete</option><option>Capacete</option>
+                        <option>Camiseta Manga Curta</option>
+                        <option>Camiseta Manga Longa</option>
+                        <option>Calça</option>
+                        <option>Jaqueta</option>
+                        <option>Bermuda</option>
+                        <option>Touca</option>
+                        <option>Luvas</option>
+                        <option>Colete</option>
+                        <option>Capacete</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Tamanho *</label>
                     <select id="mov_tamanho" required>
                         <option value="">Selecione</option>
-                        <option>PP</option><option>P</option><option>P Feminino</option>
-                        <option>M</option><option>M Feminino</option><option>G</option>
-                        <option>G Feminino</option><option>GG</option><option>GG Feminino</option>
-                        <option>XGG</option><option>Único</option>
+                        <option>PP</option>
+                        <option>P</option>
+                        <option>P Feminino</option>
+                        <option>M</option>
+                        <option>M Feminino</option>
+                        <option>G</option>
+                        <option>G Feminino</option>
+                        <option>GG</option>
+                        <option>GG Feminino</option>
+                        <option>XGG</option>
+                        <option>Único</option>
                     </select>
                 </div>
             </div>
@@ -292,34 +92,48 @@
             <div class="form-group">
                 <label>Tipo</label>
                 <div class="radio-group">
-                    <div class="radio-btn entrada ativo" onclick="setMovimento('entrada')">📥 ENTRADA</div>
-                    <div class="radio-btn saida" onclick="setMovimento('saida')">📤 SAÍDA</div>
+                    <div class="radio-btn entrada ativo" onclick="setMovimento('entrada')">ENTRADA</div>
+                    <div class="radio-btn saida" onclick="setMovimento('saida')">SAÍDA</div>
                 </div>
                 <input type="hidden" id="mov_tipoMovimento" value="entrada">
             </div>
             <div class="grid-2">
                 <div class="form-group">
-                    <label>📊 Estoque Inicial</label>
-                    <input type="text" id="mov_estoque_inicial" readonly style="background:#0f172a; color:#94a3b8;">
+                    <label>Estoque Inicial</label>
+                    <input type="text" id="mov_estoque_inicial" readonly>
                 </div>
                 <div class="form-group">
-                    <label>📊 Estoque Final</label>
-                    <input type="text" id="mov_estoque_final" readonly style="background:#0f172a; color:#94a3b8;">
+                    <label>Estoque Final</label>
+                    <input type="text" id="mov_estoque_final" readonly>
                 </div>
             </div>
             <div class="form-group">
                 <label>Observação</label>
                 <textarea id="mov_observacao" rows="2"></textarea>
             </div>
-            <button class="btn-primary" id="btnSalvarMov" onclick="enviarMovimentacao()">💾 SALVAR NA PLANILHA</button>
+            <button class="btn-primary" id="btnSalvarMov" onclick="enviarMovimentacao()">SALVAR NA PLANILHA</button>
         </div>
         
         <div class="card">
             <h3>📋 Últimas Movimentações</h3>
             <div class="table-wrapper">
                 <table id="tabelaMovimentacoes">
-                    <thead><tr><th>Data</th><th>Uniforme</th><th>Tamanho</th><th>Local</th><th>Qtd</th><th>Destinatário</th><th>Tipo</th><th>Est.Ini</th><th>Est.Fim</th></tr></thead>
-                    <tbody id="movimentacoesBody"><tr><td colspan="9" style="text-align:center">Carregando...</td></tr></tbody>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Uniforme</th>
+                            <th>Tamanho</th>
+                            <th>Local</th>
+                            <th>Qtd</th>
+                            <th>Destinatário</th>
+                            <th>Tipo</th>
+                            <th>Est.Ini</th>
+                            <th>Est.Fim</th>
+                        </tr>
+                    </thead>
+                    <tbody id="movimentacoesBody">
+                        <tr><td colspan="9" style="text-align:center">Carregando...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -328,25 +142,38 @@
     <!-- PÁGINA 2: ESTOQUE -->
     <div id="paginaEstoque" class="pagina">
         <div class="card">
-            <h3>📦 Gerenciar Estoque</h3>
+            <h3>Gerenciar Estoque</h3>
             <div class="grid-3">
                 <div class="form-group">
                     <label>Uniforme</label>
                     <select id="est_uniforme">
                         <option value="">Selecione</option>
-                        <option>Camiseta Manga Curta</option><option>Camiseta Manga Longa</option>
-                        <option>Calça</option><option>Jaqueta</option><option>Bermuda</option>
-                        <option>Touca</option><option>Luvas</option><option>Colete</option><option>Capacete</option>
+                        <option>Camiseta Manga Curta</option>
+                        <option>Camiseta Manga Longa</option>
+                        <option>Calça</option>
+                        <option>Jaqueta</option>
+                        <option>Bermuda</option>
+                        <option>Touca</option>
+                        <option>Luvas</option>
+                        <option>Colete</option>
+                        <option>Capacete</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Tamanho</label>
                     <select id="est_tamanho">
                         <option value="">Selecione</option>
-                        <option>PP</option><option>P</option><option>P Feminino</option>
-                        <option>M</option><option>M Feminino</option><option>G</option>
-                        <option>G Feminino</option><option>GG</option><option>GG Feminino</option>
-                        <option>XGG</option><option>Único</option>
+                        <option>PP</option>
+                        <option>P</option>
+                        <option>P Feminino</option>
+                        <option>M</option>
+                        <option>M Feminino</option>
+                        <option>G</option>
+                        <option>G Feminino</option>
+                        <option>GG</option>
+                        <option>GG Feminino</option>
+                        <option>XGG</option>
+                        <option>Único</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -358,20 +185,39 @@
                 <label>Local</label>
                 <input type="text" id="est_local" placeholder="Local de armazenamento">
             </div>
-            <button class="btn-primary" onclick="salvarEstoqueInicial()">💾 SALVAR ESTOQUE</button>
+            <button class="btn-primary" onclick="salvarEstoqueInicial()">SALVAR ESTOQUE</button>
         </div>
         
         <div class="card">
-            <h3>📊 Resumo do Estoque</h3>
+            <h3>Resumo do Estoque</h3>
             <div class="resumo-estoque">
-                <div class="resumo-item"><div class="numero" id="totalItens">0</div><div class="label">Total Itens</div></div>
-                <div class="resumo-item"><div class="numero" id="totalTipos">0</div><div class="label">Tipos</div></div>
-                <div class="resumo-item"><div class="numero" id="valorTotal">0</div><div class="label">Movimentações</div></div>
+                <div class="resumo-item">
+                    <div class="numero" id="totalItens">0</div>
+                    <div class="label">Total Itens</div>
+                </div>
+                <div class="resumo-item">
+                    <div class="numero" id="totalTipos">0</div>
+                    <div class="label">Tipos</div>
+                </div>
+                <div class="resumo-item">
+                    <div class="numero" id="valorTotal">0</div>
+                    <div class="label">Movimentações</div>
+                </div>
             </div>
             <div class="table-wrapper">
                 <table id="tabelaEstoque">
-                    <thead><tr><th>Uniforme</th><th>Tamanho</th><th>Qtd</th><th>Local</th><th>Ações</th></tr></thead>
-                    <tbody id="estoqueBody"><tr><td colspan="5">Carregando...</td></tr></tbody>
+                    <thead>
+                        <tr>
+                            <th>Uniforme</th>
+                            <th>Tamanho</th>
+                            <th>Qtd</th>
+                            <th>Local</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="estoqueBody">
+                        <tr><td colspan="5">Carregando...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -380,7 +226,7 @@
     <!-- PÁGINA 3: RELATÓRIOS -->
     <div id="paginaRelatorios" class="pagina">
         <div class="card">
-            <h3>📈 Relatório de Movimentações</h3>
+            <h3>Relatório de Movimentações</h3>
             <div class="filtros">
                 <input type="month" id="filtroMes" onchange="filtrarRelatorio()">
                 <select id="filtroTipo" onchange="filtrarRelatorio()">
@@ -393,14 +239,28 @@
                 </select>
             </div>
             <div class="acoes-botoes">
-                <button class="btn-primary btn-secondary" onclick="limparFiltros()">🔄 Limpar Filtros</button>
-                <button class="btn-primary btn-warning" onclick="limparRelatorios()">🗑️ Limpar Histórico</button>
-                <button class="btn-primary btn-secondary" onclick="exportarRelatorioCSV()">📥 Exportar CSV</button>
+                <button class="btn-primary btn-secondary" onclick="limparFiltros()">Limpar Filtros</button>
+                <button class="btn-primary btn-warning" onclick="limparRelatorios()">Limpar Histórico</button>
+                <button class="btn-primary btn-secondary" onclick="exportarRelatorioCSV()">Exportar CSV</button>
             </div>
             <div class="table-wrapper">
                 <table id="tabelaRelatorio">
-                    <thead><tr><th>Data</th><th>Uniforme</th><th>Tamanho</th><th>Local</th><th>Qtd</th><th>Destinatário</th><th>Tipo</th><th>Est.Ini</th><th>Est.Fim</th></tr></thead>
-                    <tbody id="relatorioBody"><tr><td colspan="9">Carregando...</td></tr></tbody>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Uniforme</th>
+                            <th>Tamanho</th>
+                            <th>Local</th>
+                            <th>Qtd</th>
+                            <th>Destinatário</th>
+                            <th>Tipo</th>
+                            <th>Est.Ini</th>
+                            <th>Est.Fim</th>
+                        </tr>
+                    </thead>
+                    <tbody id="relatorioBody">
+                        <tr><td colspan="9">Carregando...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -409,8 +269,18 @@
             <h3>📊 Resumo por Uniforme</h3>
             <div class="table-wrapper">
                 <table id="tabelaResumoUniforme">
-                    <thead><tr><th>Uniforme</th><th>Tamanho</th><th>Estoque</th><th>Entradas</th><th>Saídas</th></tr></thead>
-                    <tbody id="resumoUniformeBody"><tr><td colspan="5">Carregando...</td></tr></tbody>
+                    <thead>
+                        <tr>
+                            <th>Uniforme</th>
+                            <th>Tamanho</th>
+                            <th>Estoque</th>
+                            <th>Entradas</th>
+                            <th>Saídas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resumoUniformeBody">
+                        <tr><td colspan="5">Carregando...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -419,363 +289,6 @@
 
 <div id="toast" class="toast"></div>
 
-<script>
-    // ========== SUA URL DO SHEETDB ==========
-    const API_URL = 'https://sheetdb.io/api/v1/vb7gan9e7kd8a';
-    
-    let tipoMovimento = 'entrada';
-    let estoque = [];
-    let movimentacoes = [];
-    let relatorioFiltrado = [];
-
-    function showToast(msg, type = 'success') {
-        const toast = document.getElementById('toast');
-        toast.textContent = msg;
-        toast.className = `toast ${type} show`;
-        setTimeout(() => toast.className = 'toast', 3000);
-    }
-    
-    // ========== ENVIO PARA SHEETDB (FUNCIONA GARANTIDO!) ==========
-    async function enviarParaPlanilha(dados) {
-        try {
-            // Formatar dados para o SheetDB
-            const dadosFormatados = {
-                data: dados.data,
-                uniforme: dados.uniforme,
-                tamanho: dados.tamanho,
-                local: dados.local,
-                quantidade: parseInt(dados.quantidade),
-                destinatario: dados.destinatario,
-                tipo: dados.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA',
-                estoque_inicial: parseInt(dados.estoqueInicial),
-                estoque_final: parseInt(dados.estoqueFinal),
-                observacao: dados.observacao || '',
-                timestamp: new Date().toISOString()
-            };
-            
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dadosFormatados)
-            });
-            
-            if(response.ok) {
-                showToast('✅ Enviado para a planilha!', 'success');
-                return true;
-            } else {
-                const erro = await response.text();
-                console.error('Erro:', erro);
-                showToast('⚠️ Erro ao enviar, mas salvo localmente', 'warning');
-                return false;
-            }
-        } catch(error) {
-            console.error('Erro:', error);
-            showToast('⚠️ Erro de conexão, salvo localmente', 'warning');
-            return false;
-        }
-    }
-    
-    // ========== DADOS LOCAIS ==========
-    function carregarDados() {
-        const savedEstoque = localStorage.getItem('opcao_telecom_estoque');
-        if(savedEstoque) estoque = JSON.parse(savedEstoque);
-        const savedMov = localStorage.getItem('opcao_telecom_movimentacoes');
-        if(savedMov) movimentacoes = JSON.parse(savedMov);
-        
-        atualizarTabelaEstoque();
-        atualizarTabelaMovimentacoes();
-        atualizarFiltrosUniformes();
-        filtrarRelatorio();
-    }
-    
-    function salvarEstoqueLocal() { localStorage.setItem('opcao_telecom_estoque', JSON.stringify(estoque)); }
-    function salvarMovimentacoesLocal() { localStorage.setItem('opcao_telecom_movimentacoes', JSON.stringify(movimentacoes)); }
-    
-    function getEstoqueAtual(uniforme, tamanho) {
-        const item = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
-        return item ? item.quantidade : 0;
-    }
-    
-    function atualizarEstoque(uniforme, tamanho, quantidade, tipo, local) {
-        const index = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
-        if(index === -1 && tipo === 'entrada') {
-            estoque.push({ uniforme, tamanho, quantidade, local: local || 'Almoxarifado', ultimaAtualizacao: new Date().toLocaleString() });
-        } else if(index !== -1) {
-            if(tipo === 'entrada') estoque[index].quantidade += quantidade;
-            else { estoque[index].quantidade -= quantidade; if(estoque[index].quantidade < 0) estoque[index].quantidade = 0; }
-            estoque[index].ultimaAtualizacao = new Date().toLocaleString();
-            if(local) estoque[index].local = local;
-        }
-        salvarEstoqueLocal();
-        atualizarTabelaEstoque();
-    }
-    
-    function verificarEstoque(uniforme, tamanho, quantidade) {
-        const atual = getEstoqueAtual(uniforme, tamanho);
-        document.getElementById('mov_estoque_inicial').value = atual;
-        const final = tipoMovimento === 'entrada' ? atual + quantidade : atual - quantidade;
-        document.getElementById('mov_estoque_final').value = final >= 0 ? final : 0;
-        if(tipoMovimento === 'saida' && final < 0) {
-            showToast(`⚠️ Estoque insuficiente! Disponível: ${atual}`, 'error');
-            return false;
-        }
-        return true;
-    }
-    
-    function setMovimento(tipo) {
-        tipoMovimento = tipo;
-        document.getElementById('mov_tipoMovimento').value = tipo;
-        const btnEntrada = document.querySelector('.radio-btn.entrada');
-        const btnSaida = document.querySelector('.radio-btn.saida');
-        if(tipo === 'entrada') { btnEntrada.classList.add('ativo'); btnSaida.classList.remove('ativo'); }
-        else { btnSaida.classList.add('ativo'); btnEntrada.classList.remove('ativo'); }
-        
-        const u = document.getElementById('mov_uniforme').value;
-        const t = document.getElementById('mov_tamanho').value;
-        const q = parseInt(document.getElementById('mov_quantidade').value);
-        if(u && t) verificarEstoque(u, t, q);
-    }
-    
-    async function enviarMovimentacao() {
-        const uniforme = document.getElementById('mov_uniforme').value;
-        const tamanho = document.getElementById('mov_tamanho').value;
-        const local = document.getElementById('mov_local').value.trim();
-        const quantidade = parseInt(document.getElementById('mov_quantidade').value);
-        const destinatario = document.getElementById('mov_destinatario').value.trim();
-        const data = document.getElementById('mov_data').value;
-        const observacao = document.getElementById('mov_observacao').value || '';
-        const tipo = tipoMovimento;
-        
-        if(!uniforme || !tamanho || !local || !destinatario || !data) {
-            showToast('❌ Preencha todos os campos!', 'error');
-            return;
-        }
-        
-        const estoqueInicial = getEstoqueAtual(uniforme, tamanho);
-        let estoqueFinal = estoqueInicial;
-        if(tipo === 'entrada') estoqueFinal = estoqueInicial + quantidade;
-        else if(quantidade > estoqueInicial) {
-            showToast(`⚠️ Estoque insuficiente! Disponível: ${estoqueInicial}`, 'error');
-            return;
-        } else estoqueFinal = estoqueInicial - quantidade;
-        
-        const mov = { id: Date.now(), data, uniforme, tamanho, local, quantidade, destinatario, tipo, estoqueInicial, estoqueFinal, observacao };
-        
-        movimentacoes.unshift(mov);
-        salvarMovimentacoesLocal();
-        atualizarEstoque(uniforme, tamanho, quantidade, tipo, local);
-        await enviarParaPlanilha(mov);
-        
-        showToast('✅ Movimentação salva!', 'success');
-        document.getElementById('mov_local').value = '';
-        document.getElementById('mov_destinatario').value = '';
-        document.getElementById('mov_observacao').value = '';
-        document.getElementById('mov_quantidade').value = '1';
-        document.getElementById('mov_estoque_inicial').value = '';
-        document.getElementById('mov_estoque_final').value = '';
-        atualizarTabelaMovimentacoes();
-        atualizarFiltrosUniformes();
-        filtrarRelatorio();
-    }
-    
-    function salvarEstoqueInicial() {
-        const uniforme = document.getElementById('est_uniforme').value;
-        const tamanho = document.getElementById('est_tamanho').value;
-        const quantidade = parseInt(document.getElementById('est_quantidade').value);
-        const local = document.getElementById('est_local').value || 'Almoxarifado';
-        if(!uniforme || !tamanho) { showToast('❌ Selecione uniforme e tamanho!', 'error'); return; }
-        
-        const index = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
-        if(index !== -1) {
-            estoque[index].quantidade = quantidade;
-            estoque[index].local = local;
-            estoque[index].ultimaAtualizacao = new Date().toLocaleString();
-        } else {
-            estoque.push({ uniforme, tamanho, quantidade, local, ultimaAtualizacao: new Date().toLocaleString() });
-        }
-        salvarEstoqueLocal();
-        atualizarTabelaEstoque();
-        showToast('✅ Estoque salvo!', 'success');
-    }
-    
-    function editarEstoque(uniforme, tamanho) {
-        const item = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
-        if(item) {
-            document.getElementById('est_uniforme').value = uniforme;
-            document.getElementById('est_tamanho').value = tamanho;
-            document.getElementById('est_quantidade').value = item.quantidade;
-            document.getElementById('est_local').value = item.local || '';
-            mudarPagina('estoque', document.querySelector('.nav-tab:nth-child(2)'));
-        }
-    }
-    
-    function excluirEstoque(uniforme, tamanho) {
-        if(confirm(`Remover ${uniforme} - ${tamanho}?`)) {
-            estoque = estoque.filter(e => !(e.uniforme === uniforme && e.tamanho === tamanho));
-            salvarEstoqueLocal();
-            atualizarTabelaEstoque();
-            showToast('✅ Produto removido!', 'success');
-        }
-    }
-    
-    function atualizarTabelaEstoque() {
-        const tbody = document.getElementById('estoqueBody');
-        const totalItens = estoque.reduce((sum, i) => sum + i.quantidade, 0);
-        document.getElementById('totalItens').textContent = totalItens;
-        document.getElementById('totalTipos').textContent = estoque.length;
-        document.getElementById('valorTotal').textContent = movimentacoes.length;
-        
-        if(estoque.length === 0) { tbody.innerHTML = '<tr><td colspan="5">Nenhum produto</td></tr>'; return; }
-        tbody.innerHTML = estoque.map(i => `
-            <tr>
-                <td>${i.uniforme}</td><td>${i.tamanho}</td>
-                <td><strong>${i.quantidade}</strong></td><td>${i.local || '-'}</td>
-                <td>
-                    <button class="btn-icon btn-edit" onclick="editarEstoque('${i.uniforme}', '${i.tamanho}')">✏️</button>
-                    <button class="btn-icon btn-delete" onclick="excluirEstoque('${i.uniforme}', '${i.tamanho}')">🗑️</button>
-                 </td>
-             </tr>
-        `).join('');
-    }
-    
-    function atualizarTabelaMovimentacoes() {
-        const tbody = document.getElementById('movimentacoesBody');
-        if(movimentacoes.length === 0) { tbody.innerHTML = '<tr><td colspan="9">Nenhuma movimentação</td></tr>'; return; }
-        tbody.innerHTML = movimentacoes.slice(0, 30).map(m => `
-            <tr>
-                <td>${m.data}</td><td>${m.uniforme}</td><td>${m.tamanho}</td>
-                <td>${m.local}</td><td>${m.quantidade}</td><td>${m.destinatario}</td>
-                <td><span class="badge ${m.tipo}">${m.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA'}</span></td>
-                <td>${m.estoqueInicial}</td><td>${m.estoqueFinal}</td>
-             </tr>
-        `).join('');
-    }
-    
-    function atualizarFiltrosUniformes() {
-        const uniformes = [...new Set(movimentacoes.map(m => m.uniforme))];
-        const select = document.getElementById('filtroUniforme');
-        select.innerHTML = '<option value="">Todos uniformes</option>' + uniformes.map(u => `<option value="${u}">${u}</option>`).join('');
-    }
-    
-    function filtrarRelatorio() {
-        const mes = document.getElementById('filtroMes').value;
-        const tipo = document.getElementById('filtroTipo').value;
-        const uniforme = document.getElementById('filtroUniforme').value;
-        
-        let filtrados = [...movimentacoes];
-        if(mes) filtrados = filtrados.filter(m => m.data.substring(0,7) === mes);
-        if(tipo !== 'todos') filtrados = filtrados.filter(m => m.tipo === tipo);
-        if(uniforme) filtrados = filtrados.filter(m => m.uniforme === uniforme);
-        
-        relatorioFiltrado = filtrados;
-        
-        const tbody = document.getElementById('relatorioBody');
-        if(filtrados.length === 0) { tbody.innerHTML = '<td><td colspan="9">Nenhum registro encontrado</td></tr>'; }
-        else {
-            tbody.innerHTML = filtrados.slice(0, 100).map(m => `
-                <tr>
-                    <td>${m.data}</td><td>${m.uniforme}</td><td>${m.tamanho}</td>
-                    <td>${m.local}</td><td>${m.quantidade}</td><td>${m.destinatario}</td>
-                    <td><span class="badge ${m.tipo}">${m.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA'}</span></td>
-                    <td>${m.estoqueInicial}</td><td>${m.estoqueFinal}</td>
-                 </tr>
-            `).join('');
-        }
-        
-        const grupos = new Map();
-        filtrados.forEach(m => {
-            const key = `${m.uniforme}|${m.tamanho}`;
-            if(!grupos.has(key)) grupos.set(key, { uniforme: m.uniforme, tamanho: m.tamanho, entradas: 0, saidas: 0 });
-            const item = grupos.get(key);
-            if(m.tipo === 'entrada') item.entradas += m.quantidade;
-            else item.saidas += m.quantidade;
-        });
-        
-        const resumoBody = document.getElementById('resumoUniformeBody');
-        const gruposArray = Array.from(grupos.values());
-        if(gruposArray.length === 0) { resumoBody.innerHTML = '<td><td colspan="5">Nenhum dado</td></tr>'; }
-        else {
-            resumoBody.innerHTML = gruposArray.map(g => {
-                const estoqueAtual = getEstoqueAtual(g.uniforme, g.tamanho);
-                return `<tr>
-                    <td>${g.uniforme}</td><td>${g.tamanho}</td>
-                    <td><strong>${estoqueAtual}</strong></td>
-                    <td>${g.entradas}</td><td>${g.saidas}</td>
-                </tr>`;
-            }).join('');
-        }
-    }
-    
-    function limparFiltros() {
-        document.getElementById('filtroMes').value = '';
-        document.getElementById('filtroTipo').value = 'todos';
-        document.getElementById('filtroUniforme').value = '';
-        filtrarRelatorio();
-        showToast('✅ Filtros limpos!', 'success');
-    }
-    
-    function limparRelatorios() {
-        if(confirm('⚠️ Isso vai limpar TODO o histórico de movimentações. Confirmar?')) {
-            movimentacoes = [];
-            salvarMovimentacoesLocal();
-            atualizarTabelaMovimentacoes();
-            atualizarFiltrosUniformes();
-            filtrarRelatorio();
-            showToast('🗑️ Histórico limpo!', 'warning');
-        }
-    }
-    
-    function exportarRelatorioCSV() {
-        if(relatorioFiltrado.length === 0) {
-            showToast('Nenhum dado para exportar', 'error');
-            return;
-        }
-        const headers = ['Data', 'Uniforme', 'Tamanho', 'Local', 'Quantidade', 'Destinatário', 'Tipo', 'Estoque Inicial', 'Estoque Final'];
-        const linhas = relatorioFiltrado.map(m => [m.data, m.uniforme, m.tamanho, m.local, m.quantidade, m.destinatario, m.tipo, m.estoqueInicial, m.estoqueFinal]);
-        const csv = [headers, ...linhas].map(row => row.join(',')).join('\n');
-        const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `relatorio_uniformes_${new Date().toISOString().split('T')[0]}.csv`;
-        link.click();
-        URL.revokeObjectURL(link.href);
-        showToast('📥 Relatório exportado!', 'success');
-    }
-    
-    function mudarPagina(pagina, elemento) {
-        document.querySelectorAll('.pagina').forEach(p => p.classList.remove('ativa'));
-        document.getElementById(`pagina${pagina.charAt(0).toUpperCase() + pagina.slice(1)}`).classList.add('ativa');
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('ativo'));
-        if(elemento) elemento.classList.add('ativo');
-        if(pagina === 'relatorios') filtrarRelatorio();
-    }
-    
-    // Event listeners
-    document.getElementById('mov_uniforme')?.addEventListener('change', () => {
-        const u = document.getElementById('mov_uniforme').value;
-        const t = document.getElementById('mov_tamanho').value;
-        const q = parseInt(document.getElementById('mov_quantidade').value);
-        if(u && t) verificarEstoque(u, t, q);
-    });
-    document.getElementById('mov_tamanho')?.addEventListener('change', () => {
-        const u = document.getElementById('mov_uniforme').value;
-        const t = document.getElementById('mov_tamanho').value;
-        const q = parseInt(document.getElementById('mov_quantidade').value);
-        if(u && t) verificarEstoque(u, t, q);
-    });
-    document.getElementById('mov_quantidade')?.addEventListener('input', () => {
-        const u = document.getElementById('mov_uniforme').value;
-        const t = document.getElementById('mov_tamanho').value;
-        const q = parseInt(document.getElementById('mov_quantidade').value);
-        if(u && t) verificarEstoque(u, t, q);
-    });
-    
-    // Inicialização
-    document.getElementById('mov_data').valueAsDate = new Date();
-    document.getElementById('filtroMes').value = new Date().toISOString().substring(0,7);
-    carregarDados();
-    
-    showToast('✅ Sistema pronto! Dados vão para a planilha automaticamente!', 'success');
-</script>
+<script src="script.js"></script>
 </body>
 </html>
