@@ -21,6 +21,47 @@ function initSupabase() {
     return supabaseClient;
 }
 
+// ========== FUNÇÃO PARA ENVIAR ESTOQUE PARA PLANILHA ==========
+async function enviarEstoqueParaPlanilha() {
+    try {
+        // Buscar estoque atual do Supabase
+        const supabase = initSupabase();
+        let dadosEstoque = [];
+        
+        if (usuarioAtual && supabase) {
+            const { data } = await supabase.from('estoque').select('*');
+            if (data) dadosEstoque = data;
+        } else {
+            dadosEstoque = estoque;
+        }
+        
+        // Enviar cada item do estoque para a planilha
+        for (const item of dadosEstoque) {
+            const dadosFormatados = {
+                acao: 'sync_estoque',
+                uniforme: item.uniforme,
+                tamanho: item.tamanho,
+                quantidade: item.quantidade,
+                local: item.local || 'Almoxarifado',
+                timestamp: new Date().toISOString()
+            };
+            
+            await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosFormatados)
+            });
+        }
+        
+        console.log('✅ Estoque sincronizado com a planilha');
+        return true;
+    } catch(error) {
+        console.error('Erro ao sincronizar estoque:', error);
+        return false;
+    }
+}
+
 // ========== FUNÇÕES DE LOGIN (GLOBAIS) ==========
 window.mostrarLogin = function() {
     document.getElementById('telaCadastro').style.display = 'none';
@@ -156,12 +197,15 @@ async function carregarDadosDoSupabase() {
         estoque = estData;
         salvarEstoqueLocal();
         atualizarTabelaEstoque();
+        
+        // Sincronizar estoque com a planilha
+        await enviarEstoqueParaPlanilha();
     }
     
     showToast('✅ Dados sincronizados!');
 }
 
-// ========== FUNÇÕES ORIGINAIS (mantidas) ==========
+// ========== FUNÇÕES ORIGINAIS ==========
 function showToast(msg, type = 'success') {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
@@ -324,7 +368,7 @@ window.enviarMovimentacao = async function() {
     salvarMovimentacoesLocal();
     atualizarEstoque(uniforme, tamanho, quantidade, tipo, local);
     
-    // Enviar para planilha
+    // Enviar para planilha (movimentação)
     enviarParaPlanilha(mov);
     
     // Salvar no Supabase
@@ -347,10 +391,21 @@ window.enviarMovimentacao = async function() {
                 .update({ quantidade: estoqueFinal, local, ultima_atualizacao: new Date() })
                 .eq('id', estoqueExistente.id);
         } else {
-            await supabase
+            const { data: newEstoque } = await supabase
                 .from('estoque')
-                .insert([{ uniforme, tamanho, quantidade: estoqueFinal, local }]);
+                .insert([{ uniforme, tamanho, quantidade: estoqueFinal, local }])
+                .select();
+            
+            if (newEstoque && newEstoque[0]) {
+                const index = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
+                if (index !== -1) {
+                    estoque[index].id = newEstoque[0].id;
+                }
+            }
         }
+        
+        // Sincronizar estoque com a planilha
+        await enviarEstoqueParaPlanilha();
     }
     
     showToast('✅ Movimentação salva!');
@@ -395,6 +450,7 @@ window.salvarEstoqueInicial = async function() {
     salvarEstoqueLocal();
     atualizarTabelaEstoque();
     
+    // Salvar no Supabase
     const supabase = initSupabase();
     if (usuarioAtual && supabase) {
         const existe = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
@@ -405,13 +461,24 @@ window.salvarEstoqueInicial = async function() {
                 .update({ quantidade, local, ultima_atualizacao: new Date() })
                 .eq('id', existe.id);
         } else {
-            await supabase
+            const { data: newEstoque } = await supabase
                 .from('estoque')
-                .insert([{ uniforme, tamanho, quantidade, local }]);
+                .insert([{ uniforme, tamanho, quantidade, local }])
+                .select();
+            
+            if (newEstoque && newEstoque[0]) {
+                const idx = estoque.findIndex(e => e.uniforme === uniforme && e.tamanho === tamanho);
+                if (idx !== -1) {
+                    estoque[idx].id = newEstoque[0].id;
+                }
+            }
         }
+        
+        // Sincronizar estoque com a planilha
+        await enviarEstoqueParaPlanilha();
     }
     
-    showToast('✅ Estoque salvo!');
+    showToast('✅ Estoque salvo e sincronizado com a planilha!');
 };
 
 window.editarEstoque = function(uniforme, tamanho) {
@@ -425,11 +492,26 @@ window.editarEstoque = function(uniforme, tamanho) {
     }
 };
 
-window.excluirEstoque = function(uniforme, tamanho) {
+window.excluirEstoque = async function(uniforme, tamanho) {
     if(confirm(`Remover ${uniforme} - ${tamanho}?`)) {
+        const itemRemover = estoque.find(e => e.uniforme === uniforme && e.tamanho === tamanho);
+        
         estoque = estoque.filter(e => !(e.uniforme === uniforme && e.tamanho === tamanho));
         salvarEstoqueLocal();
         atualizarTabelaEstoque();
+        
+        // Remover do Supabase
+        const supabase = initSupabase();
+        if (usuarioAtual && supabase && itemRemover && itemRemover.id) {
+            await supabase
+                .from('estoque')
+                .delete()
+                .eq('id', itemRemover.id);
+            
+            // Sincronizar estoque com a planilha
+            await enviarEstoqueParaPlanilha();
+        }
+        
         showToast('✅ Produto removido!', 'success');
     }
 };
@@ -629,7 +711,29 @@ async function verificarSessao() {
     } else {
         document.getElementById('telaLogin').style.display = 'flex';
         document.getElementById('sistemaPrincipal').style.display = 'none';
-        carregarDados(); // Carrega dados do localStorage
+        carregarDados();
+    }
+}
+
+// ========== BOTÃO MANUAL PARA SINCRONIZAR ESTOQUE ==========
+window.sincronizarEstoqueComPlanilha = async function() {
+    showToast('🔄 Sincronizando estoque com a planilha...');
+    await enviarEstoqueParaPlanilha();
+    showToast('✅ Estoque sincronizado!');
+};
+
+// Adicionar botão de sincronização no card de estoque (opcional)
+function adicionarBotaoSincronizar() {
+    const cardEstoque = document.querySelector('#paginaEstoque .card:first-child');
+    if (cardEstoque && !document.getElementById('btnSyncEstoque')) {
+        const btnSync = document.createElement('button');
+        btnSync.id = 'btnSyncEstoque';
+        btnSync.className = 'btn-primary btn-secondary';
+        btnSync.style.marginTop = '10px';
+        btnSync.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        btnSync.innerHTML = '🔄 SINCRONIZAR ESTOQUE COM PLANILHA';
+        btnSync.onclick = window.sincronizarEstoqueComPlanilha;
+        cardEstoque.appendChild(btnSync);
     }
 }
 
@@ -661,5 +765,6 @@ document.getElementById('mov_quantidade')?.addEventListener('input', () => {
 // ========== INICIAR ==========
 initSupabase();
 verificarSessao();
+setTimeout(adicionarBotaoSincronizar, 1000);
 
 showToast('✅ Sistema pronto!');
