@@ -13,6 +13,9 @@ let estoque = [];
 let movimentacoes = [];
 let relatorioFiltrado = [];
 
+// Flag para evitar envio duplicado
+let jaSincronizouEstoque = false;
+
 // ========== INICIAR SUPABASE ==========
 function initSupabase() {
     if (!supabaseClient && window.supabase) {
@@ -21,48 +24,39 @@ function initSupabase() {
     return supabaseClient;
 }
 
-// ========== FUNÇÃO PARA ENVIAR ESTOQUE PARA PLANILHA ==========
-async function enviarEstoqueParaPlanilha() {
+// ========== FUNÇÃO PARA ENVIAR APENAS MOVIMENTAÇÃO PARA PLANILHA ==========
+async function enviarMovimentacaoParaPlanilha(dados) {
     try {
-        // Buscar estoque atual do Supabase
-        const supabase = initSupabase();
-        let dadosEstoque = [];
+        const dadosFormatados = {
+            data: dados.data,
+            uniforme: dados.uniforme,
+            tamanho: dados.tamanho,
+            local: dados.local,
+            quantidade: parseInt(dados.quantidade),
+            destinatario: dados.destinatario,
+            tipo: dados.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA',
+            estoque_inicial: parseInt(dados.estoqueInicial),
+            estoque_final: parseInt(dados.estoqueFinal),
+            observacao: dados.observacao || '',
+            timestamp: new Date().toISOString()
+        };
         
-        if (usuarioAtual && supabase) {
-            const { data } = await supabase.from('estoque').select('*');
-            if (data) dadosEstoque = data;
-        } else {
-            dadosEstoque = estoque;
-        }
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosFormatados)
+        });
         
-        // Enviar cada item do estoque para a planilha
-        for (const item of dadosEstoque) {
-            const dadosFormatados = {
-                acao: 'sync_estoque',
-                uniforme: item.uniforme,
-                tamanho: item.tamanho,
-                quantidade: item.quantidade,
-                local: item.local || 'Almoxarifado',
-                timestamp: new Date().toISOString()
-            };
-            
-            await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dadosFormatados)
-            });
-        }
-        
-        console.log('✅ Estoque sincronizado com a planilha');
+        console.log('✅ Movimentação enviada para planilha');
         return true;
     } catch(error) {
-        console.error('Erro ao sincronizar estoque:', error);
+        console.error('Erro planilha:', error);
         return false;
     }
 }
 
-// ========== FUNÇÕES DE LOGIN (GLOBAIS) ==========
+// ========== FUNÇÕES DE LOGIN ==========
 window.mostrarLogin = function() {
     document.getElementById('telaCadastro').style.display = 'none';
     document.getElementById('telaLogin').style.display = 'flex';
@@ -102,17 +96,14 @@ window.fazerLogin = async function() {
     usuarioAtual = data.user;
     document.getElementById('telaLogin').style.display = 'none';
     
-    // Carregar dados
     await carregarDadosDoSupabase();
     
-    // Mostrar sistema
     document.getElementById('sistemaPrincipal').style.display = 'block';
     
-    // Atualizar nome do usuário
     const nomeUsuario = usuarioAtual.email?.split('@')[0] || 'Usuário';
     document.getElementById('userName').innerHTML = `👤 ${nomeUsuario}`;
     
-    showToast('✅ Login realizado! Dados sincronizados!');
+    showToast('✅ Login realizado!');
 };
 
 window.fazerCadastro = async function() {
@@ -160,6 +151,7 @@ window.fazerLogout = async function() {
     usuarioAtual = null;
     estoque = [];
     movimentacoes = [];
+    jaSincronizouEstoque = false;
     
     document.getElementById('sistemaPrincipal').style.display = 'none';
     document.getElementById('telaLogin').style.display = 'flex';
@@ -171,7 +163,7 @@ window.fazerLogout = async function() {
 async function carregarDadosDoSupabase() {
     if (!usuarioAtual) return;
     
-    showToast('🔄 Sincronizando dados...');
+    showToast('🔄 Carregando dados...');
     const supabase = initSupabase();
     
     // Carregar movimentações
@@ -197,12 +189,9 @@ async function carregarDadosDoSupabase() {
         estoque = estData;
         salvarEstoqueLocal();
         atualizarTabelaEstoque();
-        
-        // Sincronizar estoque com a planilha
-        await enviarEstoqueParaPlanilha();
     }
     
-    showToast('✅ Dados sincronizados!');
+    showToast('✅ Dados carregados!');
 }
 
 // ========== FUNÇÕES ORIGINAIS ==========
@@ -211,37 +200,6 @@ function showToast(msg, type = 'success') {
     toast.textContent = msg;
     toast.className = `toast ${type} show`;
     setTimeout(() => toast.className = 'toast', 3000);
-}
-
-async function enviarParaPlanilha(dados) {
-    try {
-        const dadosFormatados = {
-            data: dados.data,
-            uniforme: dados.uniforme,
-            tamanho: dados.tamanho,
-            local: dados.local,
-            quantidade: parseInt(dados.quantidade),
-            destinatario: dados.destinatario,
-            tipo: dados.tipo === 'entrada' ? 'ENTRADA' : 'SAÍDA',
-            estoque_inicial: parseInt(dados.estoqueInicial),
-            estoque_final: parseInt(dados.estoqueFinal),
-            observacao: dados.observacao || '',
-            timestamp: new Date().toISOString()
-        };
-        
-        await fetch(API_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dadosFormatados)
-        });
-        
-        console.log('✅ Enviado para planilha');
-        return true;
-    } catch(error) {
-        console.error('Erro planilha:', error);
-        return false;
-    }
 }
 
 function carregarDados() {
@@ -368,8 +326,8 @@ window.enviarMovimentacao = async function() {
     salvarMovimentacoesLocal();
     atualizarEstoque(uniforme, tamanho, quantidade, tipo, local);
     
-    // Enviar para planilha (movimentação)
-    enviarParaPlanilha(mov);
+    // Enviar SOMENTE a movimentação para planilha (NÃO o estoque inteiro)
+    enviarMovimentacaoParaPlanilha(mov);
     
     // Salvar no Supabase
     const supabase = initSupabase();
@@ -403,9 +361,6 @@ window.enviarMovimentacao = async function() {
                 }
             }
         }
-        
-        // Sincronizar estoque com a planilha
-        await enviarEstoqueParaPlanilha();
     }
     
     showToast('✅ Movimentação salva!');
@@ -473,12 +428,9 @@ window.salvarEstoqueInicial = async function() {
                 }
             }
         }
-        
-        // Sincronizar estoque com a planilha
-        await enviarEstoqueParaPlanilha();
     }
     
-    showToast('✅ Estoque salvo e sincronizado com a planilha!');
+    showToast('✅ Estoque salvo!');
 };
 
 window.editarEstoque = function(uniforme, tamanho) {
@@ -500,16 +452,12 @@ window.excluirEstoque = async function(uniforme, tamanho) {
         salvarEstoqueLocal();
         atualizarTabelaEstoque();
         
-        // Remover do Supabase
         const supabase = initSupabase();
         if (usuarioAtual && supabase && itemRemover && itemRemover.id) {
             await supabase
                 .from('estoque')
                 .delete()
                 .eq('id', itemRemover.id);
-            
-            // Sincronizar estoque com a planilha
-            await enviarEstoqueParaPlanilha();
         }
         
         showToast('✅ Produto removido!', 'success');
@@ -625,7 +573,7 @@ window.filtrarRelatorio = function() {
     const gruposArray = Array.from(grupos.values());
     
     if(gruposArray.length === 0) {
-        resumoBody.innerHTML = '<tr><td colspan="5">Nenhum dado</td</tr>';
+        resumoBody.innerHTML = '<tr><td colspan="5">Nenhum dado</td<tr>';
     } else {
         resumoBody.innerHTML = gruposArray.map(g => {
             const estoqueAtual = getEstoqueAtual(g.uniforme, g.tamanho);
@@ -693,7 +641,7 @@ window.mudarPagina = function(pagina, elemento) {
     if(pagina === 'relatorios') window.filtrarRelatorio();
 };
 
-// ========== VERIFICAR SESSÃO AO CARREGAR ==========
+// ========== VERIFICAR SESSÃO ==========
 async function verificarSessao() {
     const supabase = initSupabase();
     if (!supabase) return;
@@ -712,28 +660,6 @@ async function verificarSessao() {
         document.getElementById('telaLogin').style.display = 'flex';
         document.getElementById('sistemaPrincipal').style.display = 'none';
         carregarDados();
-    }
-}
-
-// ========== BOTÃO MANUAL PARA SINCRONIZAR ESTOQUE ==========
-window.sincronizarEstoqueComPlanilha = async function() {
-    showToast('🔄 Sincronizando estoque com a planilha...');
-    await enviarEstoqueParaPlanilha();
-    showToast('✅ Estoque sincronizado!');
-};
-
-// Adicionar botão de sincronização no card de estoque (opcional)
-function adicionarBotaoSincronizar() {
-    const cardEstoque = document.querySelector('#paginaEstoque .card:first-child');
-    if (cardEstoque && !document.getElementById('btnSyncEstoque')) {
-        const btnSync = document.createElement('button');
-        btnSync.id = 'btnSyncEstoque';
-        btnSync.className = 'btn-primary btn-secondary';
-        btnSync.style.marginTop = '10px';
-        btnSync.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-        btnSync.innerHTML = '🔄 SINCRONIZAR ESTOQUE COM PLANILHA';
-        btnSync.onclick = window.sincronizarEstoqueComPlanilha;
-        cardEstoque.appendChild(btnSync);
     }
 }
 
@@ -765,6 +691,5 @@ document.getElementById('mov_quantidade')?.addEventListener('input', () => {
 // ========== INICIAR ==========
 initSupabase();
 verificarSessao();
-setTimeout(adicionarBotaoSincronizar, 1000);
 
 showToast('✅ Sistema pronto!');
